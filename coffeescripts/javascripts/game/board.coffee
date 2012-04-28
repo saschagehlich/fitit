@@ -6,44 +6,8 @@ class Board
     width: 15
     height: 13
 
-  # data[row][col]
-  # hittingSpace:
-  #   0:
-  #     2: 1
-  #     3: 1
-  #     4: 1
-  #   1: 
-  #     2: 1
-  #     3: 1
-  #     4: 1
-  #   2:
-  #     2: 1
-  #     3: 1
-  #     4: 1
-  #   3:
-  #     2: 1
-  #     3: 1
-  #     4: 1
-  #   4:
-  #     0: 1
-  #     1: 1
-  #     2: 1
-  #     3: 1
-  #     4: 1
-  #   sum: 17
-
   initialize: (@context, @boardData) ->
     return
-    # # create initial board data
-    # for i in [0...@grid.height]
-    #   for j in [0...@grid.width]
-    #     @boardData[i] or= {}
-    #     @boardData[i][j] = null
-
-    # # set checkable tiles
-    # for i in [0...5]
-    #   for j in [0...5]
-    #     @boardData[4+i][5+j] = @hittingSpace[i][j]
 
   draw: ->
     # clear canvas
