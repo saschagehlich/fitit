@@ -6,6 +6,14 @@ module.exports = class
     @name = "Arsch"
     @block = Blocks.getRandomBlock()
     
+    @rotation = 0
     @position =
       x: 0
       y: 0
+
+  safeObj: ->
+    return
+      id: player.id
+      block: player.block
+      position: player.position
+      rotation: player.rotation

@@ -10,6 +10,19 @@ module.exports = class
     @players.push(player)
     player.socket.join("game-#{@id}")
 
+    player.socket.on "move", (direction) =>
+      switch direction
+        when 0
+          position.x += 1
+        when 1
+          position.y += 1
+        when 2
+          posiiton.x -= 1
+        when 3
+          position.y -= 1
+
+      @broadcastMove player
+
     player.socket.on "disconnect", =>
       if ~@players.indexOf(player)
         @players.splice @players.indexOf(player), 1
@@ -36,13 +49,11 @@ module.exports = class
   broadcastInitialData: ->
     players = {}
     for player in @players
-      players[player.id] = {
-        id: player.id
-        block: player.block
-        position: player.position
-        rotation: player.rotation
-      }
+      players[player.id] = player.safeObj()
 
     @io.sockets.in("game-#{@id}").emit "gamedata",
       board: @board
       players: players
+
+  broadcastMove: (player) ->
+    @io.sockets.in("game-#{@id}").emit "move", player.safeObj()
