@@ -50,6 +50,8 @@
             return _this.socket.emit('move', 0);
           case 40:
             return _this.socket.emit('move', 1);
+          case 32:
+            return _this.socket.emit('rotation', 1);
         }
       });
     };

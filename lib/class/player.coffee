@@ -11,9 +11,27 @@ module.exports = class
       x: 0
       y: 0
 
+  rotate: (block) ->
+    newData = []
+    for i in [block.length-1..0]
+      for j in [0...block[i].length]
+        unless newData.hasOwnProperty(j)
+          newData[j] = []
+        newData[j].push block[i][j]
+
+    return newData
+
+  getRotatedBlock: ->
+    block = @block
+    console.log @rotation
+    for i in [0...@rotation]
+      block = @rotate(block)
+
+    return block
+
   safeObj: ->
     return {
       id: @id
-      block: @block
+      block: @getRotatedBlock()
       position: @position
     }

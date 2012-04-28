@@ -25,6 +25,16 @@ module.exports = class
 
       @broadcastMove player
 
+    player.socket.on "rotation", (direction) =>
+      player.rotation += direction
+
+      if player.rotation > 3
+        player.rotation = 0
+      else if player.rotation < 0
+        player.rotation = 3
+
+      @broadcastMove player
+
     player.socket.on "disconnect", =>
       if ~@players.indexOf(player)
         @players.splice @players.indexOf(player), 1

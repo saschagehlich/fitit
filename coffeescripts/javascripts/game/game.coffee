@@ -35,6 +35,8 @@ window.FitItGame = FitItGame = class
           @socket.emit 'move', 0
         when 40 # arrow down
           @socket.emit 'move', 1
+        when 32 # space
+          @socket.emit 'rotation', 1
         
   onPlayerMoved: (playerData) =>
     if @players.hasOwnProperty(playerData.id)
