@@ -50,6 +50,36 @@ module.exports = class
     @broadcastInitialData()
 
 
+  checkBounds: (player, direction) =>
+    switch direction
+      when 0 # right
+        player.position.x + player.block[0].length < Object.keys(@board[0]).length
+      when 1 # down
+        player.position.y + player.block.length < Object.keys(@board).length
+      when 2 # left
+        player.position.x > 0
+      when 3 # up
+        player.position.y > 0
+
+  checkSolved: =>
+    matchedTiles = 0
+    boardCopy = {}
+
+    for key, val of @board
+      boardCopy[key] ?= {}
+      for k, v of val
+        boardCopy[key][k] = v
+
+    for player in @players
+      for i in [0...player.block.length]
+        for j in [0...player.block[i].length]
+          console.log boardCopy[player.position.y + i][player.position.x + j], player.block[i][j]
+          if boardCopy[player.position.y + i][player.position.x + j] is 1 and player.block[i][j] is 1
+            boardCopy[player.position.x + i][player.position.y + j] = 2
+            matchedTiles++
+
+    console.log matchedTiles
+
   onPlayerMove: (player, direction) =>
     if @checkBounds(player, direction)
       switch direction
@@ -63,17 +93,7 @@ module.exports = class
           player.position.y -= 1
 
       @broadcastMove player
-
-  checkBounds: (player, direction) =>
-    switch direction
-      when 0 # right
-        player.position.x + player.block[0].length < Object.keys(@board[0]).length
-      when 1 # down
-        player.position.y + player.block.length < Object.keys(@board).length
-      when 2 # left
-        player.position.x > 0
-      when 3 # up
-        player.position.y > 0
+      @checkSolved()
 
   onPlayerRotation: (player, rotation) =>
     player.rotation += direction
@@ -86,6 +106,8 @@ module.exports = class
     player.block = player.getRotatedBlock()
 
     @broadcastMove player
+
+    @checkSolved()
 
   onPlayerDisconnect: (player) =>
     if ~@players.indexOf(player)
