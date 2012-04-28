@@ -10,8 +10,17 @@
       this.onBoard = __bind(this.onBoard, this);
 
       this.onConnect = __bind(this.onConnect, this);
+
+      var board, context, player;
       this.socket = io.connect("http://localhost:8080");
       this.socket.on("connect", this.onConnect);
+      context = $('#screen').get(0).getContext('2d');
+      board = new FitItBoard;
+      board.initialize(context);
+      board.draw();
+      player = new FitItPlayer;
+      player.initialize(context);
+      player.draw();
     }
 
     _Class.prototype.onConnect = function() {
