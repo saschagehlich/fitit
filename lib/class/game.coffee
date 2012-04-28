@@ -63,22 +63,26 @@ module.exports = class
 
   checkSolved: =>
     matchedTiles = 0
+    fittingTiles = 0
     boardCopy = {}
 
     for key, val of @board
       boardCopy[key] ?= {}
       for k, v of val
         boardCopy[key][k] = v
+        if v is 1
+          fittingTiles++
 
     for player in @players
       for i in [0...player.block.length]
         for j in [0...player.block[i].length]
           console.log boardCopy[player.position.y + i][player.position.x + j], player.block[i][j]
           if boardCopy[player.position.y + i][player.position.x + j] is 1 and player.block[i][j] is 1
-            boardCopy[player.position.x + i][player.position.y + j] = 2
+            boardCopy[player.position.y + i][player.position.x + j] = 2
             matchedTiles++
 
-    console.log matchedTiles
+    if matchedTiles is fittingTiles
+      # solved
 
   onPlayerMove: (player, direction) =>
     if @checkBounds(player, direction)
