@@ -10,6 +10,10 @@ module.exports = class
     @players.push(player)
     player.socket.join("game-#{@id}")
 
+    player.socket.on "disconnect", =>
+      if ~@players.indexOf(player)
+        @players.splice @players.indexOf(player), 1
+
   startGame: ->
     hittingSpace = Spaces.getRandomSpace()
     @board = {}
