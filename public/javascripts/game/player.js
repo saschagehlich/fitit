@@ -5,18 +5,26 @@
 
     Player.name = 'Player';
 
-    Player.prototype.tileImage = {
+    Player.prototype.tileImageURLs = {
       0: '/images/green-tile.png',
       1: '/images/orange-tile.png',
       2: '/images/pink-tile.png',
       3: '/images/blue-tile.png'
     };
 
+    Player.prototype.tileImages = {};
+
     function Player(context, playerData) {
+      var i, image, key, _ref;
       this.context = context;
       this.playerData = playerData;
-      null;
-
+      _ref = this.tileImageURLs;
+      for (key in _ref) {
+        image = _ref[key];
+        i = new Image;
+        i.src = image;
+        this.tileImages[key] = i;
+      }
     }
 
     Player.prototype.draw = function() {
@@ -32,15 +40,11 @@
           for (_j = 0, _len1 = row.length; _j < _len1; _j++) {
             value = row[_j];
             _results1.push((function(value) {
-              var image, x, y;
+              var x, y;
               x = _this.playerData.position.x * 32 + (_j * 32);
               y = _this.playerData.position.y * 32 + (_i * 32);
               if (value > 0) {
-                image = new Image;
-                image.src = _this.tileImage[_this.playerData.id];
-                return image.onload = function() {
-                  return _this.context.drawImage(image, x, y);
-                };
+                return _this.context.drawImage(_this.tileImages[_this.playerData.id], x, y);
               }
             })(value));
           }

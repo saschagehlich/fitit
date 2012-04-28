@@ -7,22 +7,23 @@ class Board
     height: 13
 
   initialize: (@context, @boardData) ->
+    @defaultImage = new Image()
+    @defaultImage.src = "/images/default-tile.png"
+
+    @fittingImage = new Image()
+    @fittingImage.src = "/images/fitting-tile.png"
     return
 
   draw: ->
     # clear canvas
-    @context.clearRect(800, 640)
-
     for rowIndex, row of @boardData
       for colIndex, value of row
         do (value, colIndex, rowIndex) =>
           x = colIndex * 32
           y = rowIndex * 32
-          image = new Image
           if value > 0
-            image.src = '/images/fitting-tile.png'
+            @context.drawImage(@fittingImage, x, y)
           else
-            image.src = '/images/default-tile.png'
-          image.onload = => @context.drawImage(image, x, y)
+            @context.drawImage(@defaultImage, x, y)
 
 window.FitItBoard = Board

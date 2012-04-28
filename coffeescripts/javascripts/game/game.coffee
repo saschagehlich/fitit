@@ -1,3 +1,5 @@
+window.every = (t, f) -> setInterval f, t
+
 window.FitItGame = FitItGame = class
   constructor: (io) ->
     @socket = io.connect "http://#{window.location.hostname}:8080"
@@ -9,18 +11,19 @@ window.FitItGame = FitItGame = class
     @socket.on "gamedata", @onGamedata
     @socket.on "move", @onPlayerMoved
     @socket.on "player_join", @onPlayerJoined
+    @socket.on "player_left", @onPlayerLeave
     @bindKeys()
     @startAnimationLoop()
 
   startAnimationLoop: ->
-    requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||window.webkitRequestAnimationFrame || window.msRequestAnimationFrame
-    start = window.mozAnimationStartTime # Only supported in FF. Other browsers can use something like Date.now().  
-    step = (timestamp) =>
+    every 1000 / 30, =>
       @draw()
-      progress = timestamp - start
-      if (progress < 2000)
-        requestAnimationFrame(step)
-    requestAnimationFrame(step)
+    # requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||window.webkitRequestAnimationFrame || window.msRequestAnimationFrame
+    # start = window.mozAnimationStartTime # Only supported in FF. Other browsers can use something like Date.now().  
+    # step = (timestamp) =>
+    #   @draw()
+    #   requestAnimationFrame(step)
+    # requestAnimationFrame(step)
 
   onGamedata: (data) =>
     @board = new FitItBoard
@@ -30,8 +33,6 @@ window.FitItGame = FitItGame = class
     for key, player of data.players
       newPlayer = new FitItPlayer @context, player
       @players[player.id] = newPlayer
-
-    @draw()
 
   bindKeys: ->
     $(document).keydown (event) =>
@@ -50,13 +51,20 @@ window.FitItGame = FitItGame = class
   onPlayerMoved: (playerData) =>
     if @players.hasOwnProperty(playerData.id)
       @players[playerData.id].playerData = playerData
-    @draw()
 
   onPlayerJoined: (playerData) =>
     @players[playerData.id] = new FitItPlayer @context, playerData
-    @draw()
+
+  onPlayerLeave: (playerData) =>
+    i = 0
+    for player in @players
+      if player.id is playerData.id
+        @players.splice i, 1
+        break
+      i++
 
   draw: ->
+    @context.clearRect @context.width, @context.height
     @board.draw()
     for key, player of @players
       player.draw()

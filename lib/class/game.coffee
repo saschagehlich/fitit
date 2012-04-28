@@ -1,14 +1,24 @@
 Spaces = require "../data/spaces"
 module.exports = class
   players: []
+  playerId: 0
   constructor: (@io) ->
     @id = +new Date()
 
   addPlayer: (player) ->
-    player.id = @players.length
+    @playerId++
+    player.id = @playerId
 
     @players.push(player)
     player.socket.join("game-#{@id}")
+
+    players = {}
+    for player in @players
+      players[player.id] = player.safeObj()
+
+    player.socket.emit "gamedata",
+      board: @board
+      players: players
 
     @broadcastPlayerJoin(player)
 
@@ -39,6 +49,8 @@ module.exports = class
       if ~@players.indexOf(player)
         @players.splice @players.indexOf(player), 1
 
+      @broadcastPlayerLeave player
+
   startGame: ->
     hittingSpace = Spaces.getRandomSpace()
     @board = {}
@@ -65,7 +77,7 @@ module.exports = class
 
     @io.sockets.in("game-#{@id}").emit "gamedata",
       board: @board
-      players: players
+      players: players    
 
   broadcastMove: (movingPlayer) ->
     for player in @players
@@ -75,3 +87,8 @@ module.exports = class
     for player in @players
       unless player is newPlayer
         player.socket.emit "player_join", newPlayer.safeObj()    
+
+  broadcastPlayerLeave: (leftPlayer) ->
+    for player in @players
+      unless player is leftPlayer
+        player.socket.emit "player_leave", leftPlayer.safeObj()    

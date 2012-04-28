@@ -1,13 +1,20 @@
 class Player
 
-  tileImage:
+  tileImageURLs:
     0: '/images/green-tile.png'
     1: '/images/orange-tile.png'
     2: '/images/pink-tile.png'
     3: '/images/blue-tile.png'
 
+  tileImages: {}
+
   constructor: (@context, @playerData) ->
-    null
+
+    for key, image of @tileImageURLs
+      i = new Image
+      i.src = image
+
+      @tileImages[key] = i
 
   draw: ->
     for row in @playerData.block
@@ -16,8 +23,6 @@ class Player
           x = @playerData.position.x * 32 + (_j * 32)
           y = @playerData.position.y * 32 + (_i * 32)
           if value > 0
-            image = new Image
-            image.src = @tileImage[@playerData.id]
-            image.onload = => @context.drawImage(image, x, y)
+            @context.drawImage(@tileImages[@playerData.id], x, y)
 
 window.FitItPlayer = Player

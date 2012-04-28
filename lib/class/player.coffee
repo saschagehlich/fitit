@@ -23,7 +23,6 @@ module.exports = class
 
   getRotatedBlock: ->
     block = @block
-    console.log @rotation
     for i in [0...@rotation]
       block = @rotate(block)
 

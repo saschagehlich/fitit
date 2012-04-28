@@ -17,11 +17,14 @@
     Board.prototype.initialize = function(context, boardData) {
       this.context = context;
       this.boardData = boardData;
+      this.defaultImage = new Image();
+      this.defaultImage.src = "/images/default-tile.png";
+      this.fittingImage = new Image();
+      this.fittingImage.src = "/images/fitting-tile.png";
     };
 
     Board.prototype.draw = function() {
       var colIndex, row, rowIndex, value, _ref, _results;
-      this.context.clearRect(800, 640);
       _ref = this.boardData;
       _results = [];
       for (rowIndex in _ref) {
@@ -33,18 +36,14 @@
           for (colIndex in row) {
             value = row[colIndex];
             _results1.push((function(value, colIndex, rowIndex) {
-              var image, x, y;
+              var x, y;
               x = colIndex * 32;
               y = rowIndex * 32;
-              image = new Image;
               if (value > 0) {
-                image.src = '/images/fitting-tile.png';
+                return _this.context.drawImage(_this.fittingImage, x, y);
               } else {
-                image.src = '/images/default-tile.png';
+                return _this.context.drawImage(_this.defaultImage, x, y);
               }
-              return image.onload = function() {
-                return _this.context.drawImage(image, x, y);
-              };
             })(value, colIndex, rowIndex));
           }
           return _results1;

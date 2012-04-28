@@ -5,6 +5,9 @@ module.exports = class
   queue: []
   constructor: (@io) ->
     @io.on "connection", @onConnection
+    @game   = new Game @io
+
+    @game.startGame()
 
   # onConnection: (socket) =>
   #   @queue.push socket
@@ -21,7 +24,4 @@ module.exports = class
   onConnection: (socket) =>
     player = new Player(socket)
 
-    game   = new Game @io
-    game.addPlayer player
-
-    game.startGame()
+    @game.addPlayer player

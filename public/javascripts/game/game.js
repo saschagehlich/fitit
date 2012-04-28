@@ -2,9 +2,15 @@
   var FitItGame,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
+  window.every = function(t, f) {
+    return setInterval(f, t);
+  };
+
   window.FitItGame = FitItGame = (function() {
 
     function _Class(io) {
+      this.onPlayerLeave = __bind(this.onPlayerLeave, this);
+
       this.onPlayerJoined = __bind(this.onPlayerJoined, this);
 
       this.onPlayerMoved = __bind(this.onPlayerMoved, this);
@@ -21,38 +27,31 @@
       this.socket.on("gamedata", this.onGamedata);
       this.socket.on("move", this.onPlayerMoved);
       this.socket.on("player_join", this.onPlayerJoined);
+      this.socket.on("player_left", this.onPlayerLeave);
       this.bindKeys();
       return this.startAnimationLoop();
     };
 
     _Class.prototype.startAnimationLoop = function() {
-      var requestAnimationFrame, start, step,
-        _this = this;
-      requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-      start = window.mozAnimationStartTime;
-      step = function(timestamp) {
-        var progress;
-        _this.draw();
-        progress = timestamp - start;
-        if (progress < 2000) {
-          return requestAnimationFrame(step);
-        }
-      };
-      return requestAnimationFrame(step);
+      var _this = this;
+      return every(1000 / 30, function() {
+        return _this.draw();
+      });
     };
 
     _Class.prototype.onGamedata = function(data) {
-      var key, newPlayer, player, _ref;
+      var key, newPlayer, player, _ref, _results;
       this.board = new FitItBoard;
       this.board.initialize(this.context, data.board);
       this.players = {};
       _ref = data.players;
+      _results = [];
       for (key in _ref) {
         player = _ref[key];
         newPlayer = new FitItPlayer(this.context, player);
-        this.players[player.id] = newPlayer;
+        _results.push(this.players[player.id] = newPlayer);
       }
-      return this.draw();
+      return _results;
     };
 
     _Class.prototype.bindKeys = function() {
@@ -75,18 +74,34 @@
 
     _Class.prototype.onPlayerMoved = function(playerData) {
       if (this.players.hasOwnProperty(playerData.id)) {
-        this.players[playerData.id].playerData = playerData;
+        return this.players[playerData.id].playerData = playerData;
       }
-      return this.draw();
     };
 
     _Class.prototype.onPlayerJoined = function(playerData) {
-      this.players[playerData.id] = new FitItPlayer(this.context, playerData);
-      return this.draw();
+      return this.players[playerData.id] = new FitItPlayer(this.context, playerData);
+    };
+
+    _Class.prototype.onPlayerLeave = function(playerData) {
+      var i, player, _i, _len, _ref, _results;
+      i = 0;
+      _ref = this.players;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        player = _ref[_i];
+        if (player.id === playerData.id) {
+          this.players.splice(i, 1);
+          break;
+        }
+        _results.push(i++);
+      }
+      return _results;
     };
 
     _Class.prototype.draw = function() {
       var key, player, _ref, _results;
+      console.log(Object.keys(this.players).length);
+      this.context.clearRect(this.context.width, this.context.height);
       this.board.draw();
       _ref = this.players;
       _results = [];
