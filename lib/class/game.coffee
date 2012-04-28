@@ -27,13 +27,9 @@ module.exports = class
       for j in [0...5]
         @board[4+i][5+j] = hittingSpace[i][j]
 
-    @broadcastBoard()
-    @broadcastPlayers()
+    @broadcastInitialData()
 
-  broadcastBoard: ->
-    @io.sockets.in("game-#{@id}").emit "board", @board
-
-  broadcastPlayers: ->
+  broadcastInitialData: ->
     players = {}
     for player in @players
       players[player.id] = {
@@ -42,4 +38,7 @@ module.exports = class
         position: player.position
         rotation: player.rotation
       }
-    @io.sockets.in("game-#{@id}").emit "players", players
+
+    @io.sockets.in("game-#{@id}").emit "data",
+      board: @board
+      players: players
