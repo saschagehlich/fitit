@@ -19,8 +19,8 @@ module.exports = class
     @board = {}
 
     # create empty board
-    for i in [0...15]
-      for j in [0...13]
+    for i in [0...13]
+      for j in [0...15]
         unless @board.hasOwnProperty i
           @board[i] = {}
 
