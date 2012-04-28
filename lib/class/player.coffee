@@ -12,8 +12,8 @@ module.exports = class
       y: 0
 
   safeObj: ->
-    return
-      id: player.id
-      block: player.block
-      position: player.position
-      rotation: player.rotation
+    return {
+      id: @id
+      block: @block
+      position: @position
+    }
