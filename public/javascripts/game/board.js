@@ -14,58 +14,9 @@
       height: 13
     };
 
-    Board.prototype.hittingSpace = {
-      0: {
-        2: 1,
-        3: 1,
-        4: 1
-      },
-      1: {
-        2: 1,
-        3: 1,
-        4: 1
-      },
-      2: {
-        2: 1,
-        3: 1,
-        4: 1
-      },
-      3: {
-        2: 1,
-        3: 1,
-        4: 1
-      },
-      4: {
-        0: 1,
-        1: 1,
-        2: 1,
-        3: 1,
-        4: 1
-      },
-      sum: 17
-    };
-
-    Board.prototype.initialize = function(context) {
-      var i, j, _base, _i, _j, _k, _ref, _ref1, _results;
+    Board.prototype.initialize = function(context, boardData) {
       this.context = context;
-      for (i = _i = 0, _ref = this.grid.height; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-        for (j = _j = 0, _ref1 = this.grid.width; 0 <= _ref1 ? _j < _ref1 : _j > _ref1; j = 0 <= _ref1 ? ++_j : --_j) {
-          (_base = this.boardData)[i] || (_base[i] = {});
-          this.boardData[i][j] = null;
-        }
-      }
-      _results = [];
-      for (i = _k = 0; _k < 5; i = ++_k) {
-        _results.push((function() {
-          var _l, _results1;
-          _results1 = [];
-          for (j = _l = 0; _l < 5; j = ++_l) {
-            _results1.push(this.boardData[4 + i][5 + j] = this.hittingSpace[i][j]);
-          }
-          return _results1;
-        }).call(this));
-      }
-      return _results;
+      this.boardData = boardData;
     };
 
     Board.prototype.draw = function() {

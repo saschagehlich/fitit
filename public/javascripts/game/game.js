@@ -5,35 +5,35 @@
   window.FitItGame = FitItGame = (function() {
 
     function _Class(io) {
-      this.onPlayers = __bind(this.onPlayers, this);
-
-      this.onBoard = __bind(this.onBoard, this);
+      this.onGamedata = __bind(this.onGamedata, this);
 
       this.onConnect = __bind(this.onConnect, this);
-
-      var board, context, player;
       this.socket = io.connect("http://localhost:8080");
       this.socket.on("connect", this.onConnect);
-      context = $('#screen').get(0).getContext('2d');
-      board = new FitItBoard;
-      board.initialize(context);
-      board.draw();
-      player = new FitItPlayer;
-      player.initialize(context);
-      player.draw();
+      this.context = $('#screen').get(0).getContext('2d');
     }
 
     _Class.prototype.onConnect = function() {
-      this.socket.on("board", this.onBoard);
-      return this.socket.on("players", this.onPlayers);
+      return this.socket.on("gamedata", this.onGamedata);
     };
 
-    _Class.prototype.onBoard = function(board) {
-      return console.log("board", board);
-    };
-
-    _Class.prototype.onPlayers = function(players) {
-      return console.log("players", players);
+    _Class.prototype.onGamedata = function(data) {
+      var board, key, newPlayer, player, _ref, _results;
+      console.log("gamedata", data);
+      board = new FitItBoard;
+      board.initialize(this.context, data.board);
+      board.draw();
+      this.players = [];
+      _ref = data.players;
+      _results = [];
+      for (key in _ref) {
+        player = _ref[key];
+        newPlayer = new FitItPlayer;
+        newPlayer.initialize(this.context, player);
+        newPlayer.draw();
+        _results.push(this.players.push(newPlayer));
+      }
+      return _results;
     };
 
     return _Class;

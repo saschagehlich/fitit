@@ -7,8 +7,6 @@
 
     function Player() {}
 
-    Player.prototype.playerData = [[1, 1], [-1, 1], [-1, 1]];
-
     Player.prototype.tileImage = {
       0: '/images/green-tile.png',
       1: '/images/orange-tile.png',
@@ -16,24 +14,14 @@
       3: '/images/blue-tile.png'
     };
 
-    Player.prototype.playerInfo = {
-      posX: 2,
-      posY: 2,
-      id: 1
-    };
-
-    Player.prototype.position = {
-      x: 0,
-      y: 0
-    };
-
-    Player.prototype.initialize = function(context) {
+    Player.prototype.initialize = function(context, playerData) {
       this.context = context;
+      this.playerData = playerData;
     };
 
     Player.prototype.draw = function() {
       var row, value, _i, _len, _ref, _results;
-      _ref = this.playerData;
+      _ref = this.playerData.block;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         row = _ref[_i];
@@ -45,12 +33,11 @@
             value = row[_j];
             _results1.push((function(value) {
               var image, x, y;
-              x = _this.playerInfo.posX * 32 + (_j * 32);
-              y = _this.playerInfo.posY * 32 + (_i * 32);
+              x = _this.playerData.position.x * 32 + (_j * 32);
+              y = _this.playerData.position.y * 32 + (_i * 32);
               if (value > 0) {
                 image = new Image;
-                image.src = _this.tileImage[_this.playerInfo.id];
-                console.log(image, x, y);
+                image.src = _this.tileImage[_this.playerData.id];
                 return image.onload = function() {
                   return _this.context.drawImage(image, x, y);
                 };

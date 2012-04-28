@@ -43,6 +43,6 @@ module.exports = class
         rotation: player.rotation
       }
 
-    @io.sockets.in("game-#{@id}").emit "data",
+    @io.sockets.in("game-#{@id}").emit "gamedata",
       board: @board
       players: players
