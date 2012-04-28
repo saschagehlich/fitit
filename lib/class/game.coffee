@@ -81,8 +81,9 @@ module.exports = class
             boardCopy[player.position.y + i][player.position.x + j] = 2
             matchedTiles++
 
+    console.log "#{matchedTiles} / #{fittingTiles}"
     if matchedTiles is fittingTiles
-      # solved
+      null
 
   onPlayerMove: (player, direction) =>
     if @checkBounds(player, direction)
@@ -99,7 +100,7 @@ module.exports = class
       @broadcastMove player
       @checkSolved()
 
-  onPlayerRotation: (player, rotation) =>
+  onPlayerRotation: (player, direction) =>
     player.rotation += direction
 
     if player.rotation > 3
@@ -107,7 +108,9 @@ module.exports = class
     else if player.rotation < 0
       player.rotation = 3
 
-    player.block = player.getRotatedBlock()
+    console.log "rotation", player.rotation
+
+    player.rotateBlock()
 
     @broadcastMove player
 

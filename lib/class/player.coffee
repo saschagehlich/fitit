@@ -23,12 +23,8 @@ module.exports = class
 
     return newData
 
-  getRotatedBlock: ->
-    block = @block
-    for i in [0...@rotation]
-      block = @rotate(block)
-
-    return block
+  rotateBlock: ->
+    @block = @rotate(@block)
 
   safeObj: ->
     return {
