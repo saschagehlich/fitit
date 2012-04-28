@@ -14,24 +14,57 @@
     }
 
     _Class.prototype.onConnect = function() {
-      return this.socket.on("gamedata", this.onGamedata);
+      this.socket.on("gamedata", this.onGamedata);
+      this.socket.on("move", this.onPlayerMoved);
+      return this.bindKeys();
     };
 
     _Class.prototype.onGamedata = function(data) {
-      var board, key, newPlayer, player, _ref, _results;
+      var key, newPlayer, player, _ref;
       console.log("gamedata", data);
-      board = new FitItBoard;
-      board.initialize(this.context, data.board);
-      board.draw();
-      this.players = [];
+      this.board = new FitItBoard;
+      this.board.initialize(this.context, data.board);
+      this.players = {};
       _ref = data.players;
-      _results = [];
       for (key in _ref) {
         player = _ref[key];
         newPlayer = new FitItPlayer;
         newPlayer.initialize(this.context, player);
-        newPlayer.draw();
-        _results.push(this.players.push(newPlayer));
+        this.players[newPlayer.id] = newPlayer;
+      }
+      return this.draw();
+    };
+
+    _Class.prototype.bindKeys = function() {
+      var _this = this;
+      return $(document).keydown(function(event) {
+        console.log(event);
+        switch (event.keyCode) {
+          case 37:
+            return _this.socket.emit('move', 2);
+          case 38:
+            return _this.socket.emit('move', 3);
+          case 39:
+            return _this.socket.emit('move', 0);
+          case 40:
+            return _this.socket.emit('move', 1);
+        }
+      });
+    };
+
+    _Class.prototype.onPlayerMoved = function(playerData) {
+      this.players[playerData.id] = playerData;
+      return this.draw();
+    };
+
+    _Class.prototype.draw = function() {
+      var key, player, _ref, _results;
+      this.board.draw();
+      _ref = this.players;
+      _results = [];
+      for (key in _ref) {
+        player = _ref[key];
+        _results.push(player.draw());
       }
       return _results;
     };
