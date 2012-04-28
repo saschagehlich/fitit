@@ -11,9 +11,8 @@ window.FitItGame = FitItGame = class
     @socket.on "gamedata", @onGamedata
     @socket.on "move", @onPlayerMoved
     @socket.on "player_join", @onPlayerJoined
-    @socket.on "player_left", @onPlayerLeave
+    @socket.on "player_leave", @onPlayerLeave
     @bindKeys()
-    @startAnimationLoop()
 
   startAnimationLoop: ->
     every 1000 / 30, =>
@@ -34,7 +33,10 @@ window.FitItGame = FitItGame = class
       newPlayer = new FitItPlayer @context, player
       @players[player.id] = newPlayer
 
+    @startAnimationLoop()
+
   bindKeys: ->
+    $(document).unbind "keydown"
     $(document).keydown (event) =>
       switch event.keyCode
         when 37 # arrow left
@@ -57,9 +59,9 @@ window.FitItGame = FitItGame = class
 
   onPlayerLeave: (playerData) =>
     i = 0
-    for player in @players
-      if player.id is playerData.id
-        @players.splice i, 1
+    for key, player of @players
+      if parseInt(key) is parseInt(playerData.id)
+        delete @players[playerData.id]
         break
       i++
 

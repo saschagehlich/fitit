@@ -5,7 +5,9 @@ module.exports = class
 
     @name = "Arsch"
     @block = Blocks.getRandomBlock()
-    
+
+    @color = null
+
     @rotation = 0
     @position =
       x: 0
@@ -31,6 +33,7 @@ module.exports = class
   safeObj: ->
     return {
       id: @id
-      block: @getRotatedBlock()
+      block: @block
       position: @position
+      color: @color
     }

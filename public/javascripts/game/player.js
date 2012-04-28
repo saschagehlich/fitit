@@ -6,10 +6,10 @@
     Player.name = 'Player';
 
     Player.prototype.tileImageURLs = {
-      0: '/images/green-tile.png',
-      1: '/images/orange-tile.png',
-      2: '/images/pink-tile.png',
-      3: '/images/blue-tile.png'
+      'green': '/images/green-tile.png',
+      'orange': '/images/orange-tile.png',
+      'pink': '/images/pink-tile.png',
+      'blue': '/images/blue-tile.png'
     };
 
     Player.prototype.tileImages = {};
@@ -29,6 +29,9 @@
 
     Player.prototype.draw = function() {
       var row, value, _i, _len, _ref, _results;
+      if (!this.playerData.block) {
+        console.log(this.playerData);
+      }
       _ref = this.playerData.block;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -44,7 +47,7 @@
               x = _this.playerData.position.x * 32 + (_j * 32);
               y = _this.playerData.position.y * 32 + (_i * 32);
               if (value > 0) {
-                return _this.context.drawImage(_this.tileImages[_this.playerData.id], x, y);
+                return _this.context.drawImage(_this.tileImages[_this.playerData.color], x, y);
               }
             })(value));
           }
