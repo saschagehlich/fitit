@@ -10,6 +10,8 @@ module.exports = class
     @players.push(player)
     player.socket.join("game-#{@id}")
 
+    @broadcastPlayerJoin(player)
+
     player.socket.on "move", (direction) =>
       switch direction
         when 0
@@ -55,5 +57,11 @@ module.exports = class
       board: @board
       players: players
 
-  broadcastMove: (player) ->
-    @io.sockets.in("game-#{@id}").emit "move", player.safeObj()
+  broadcastMove: (movingPlayer) ->
+    for player in @players
+      player.socket.emit "move", movingPlayer.safeObj()
+
+  broadcastPlayerJoin: (newPlayer) ->
+    for player in @players
+      unless player is newPlayer
+        player.socket.emit "player_join", newPlayer.safeObj()    

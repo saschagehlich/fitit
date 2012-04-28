@@ -5,8 +5,6 @@
 
     Player.name = 'Player';
 
-    function Player() {}
-
     Player.prototype.tileImage = {
       0: '/images/green-tile.png',
       1: '/images/orange-tile.png',
@@ -14,10 +12,12 @@
       3: '/images/blue-tile.png'
     };
 
-    Player.prototype.initialize = function(context, playerData) {
+    function Player(context, playerData) {
       this.context = context;
       this.playerData = playerData;
-    };
+      null;
+
+    }
 
     Player.prototype.draw = function() {
       var row, value, _i, _len, _ref, _results;

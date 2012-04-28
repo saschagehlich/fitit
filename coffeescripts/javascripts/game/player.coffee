@@ -6,8 +6,8 @@ class Player
     2: '/images/pink-tile.png'
     3: '/images/blue-tile.png'
 
-  initialize: (@context, @playerData) ->
-    return
+  constructor: (@context, @playerData) ->
+    null
 
   draw: ->
     for row in @playerData.block

@@ -5,12 +5,14 @@
   window.FitItGame = FitItGame = (function() {
 
     function _Class(io) {
+      this.onPlayerJoined = __bind(this.onPlayerJoined, this);
+
       this.onPlayerMoved = __bind(this.onPlayerMoved, this);
 
       this.onGamedata = __bind(this.onGamedata, this);
 
       this.onConnect = __bind(this.onConnect, this);
-      this.socket = io.connect("http://localhost:8080");
+      this.socket = io.connect("http://" + window.location.hostname + ":8080");
       this.socket.on("connect", this.onConnect);
       this.context = $('#screen').get(0).getContext('2d');
     }
@@ -18,20 +20,19 @@
     _Class.prototype.onConnect = function() {
       this.socket.on("gamedata", this.onGamedata);
       this.socket.on("move", this.onPlayerMoved);
+      this.socket.on("player_join", this.onPlayerJoined);
       return this.bindKeys();
     };
 
     _Class.prototype.onGamedata = function(data) {
       var key, newPlayer, player, _ref;
-      console.log("gamedata", data);
       this.board = new FitItBoard;
       this.board.initialize(this.context, data.board);
       this.players = {};
       _ref = data.players;
       for (key in _ref) {
         player = _ref[key];
-        newPlayer = new FitItPlayer;
-        newPlayer.initialize(this.context, player);
+        newPlayer = new FitItPlayer(this.context, player);
         this.players[player.id] = newPlayer;
       }
       return this.draw();
@@ -40,7 +41,6 @@
     _Class.prototype.bindKeys = function() {
       var _this = this;
       return $(document).keydown(function(event) {
-        console.log(event);
         switch (event.keyCode) {
           case 37:
             return _this.socket.emit('move', 2);
@@ -55,7 +55,14 @@
     };
 
     _Class.prototype.onPlayerMoved = function(playerData) {
-      this.players[playerData.id].playerData = playerData;
+      if (this.players.hasOwnProperty(playerData.id)) {
+        this.players[playerData.id].playerData = playerData;
+      }
+      return this.draw();
+    };
+
+    _Class.prototype.onPlayerJoined = function(playerData) {
+      this.players[playerData.id] = new FitItPlayer(this.context, playerData);
       return this.draw();
     };
 
