@@ -10,16 +10,25 @@ window.FitItGame = FitItGame = class
     @socket.on "move", @onPlayerMoved
     @socket.on "player_join", @onPlayerJoined
     @bindKeys()
+    @startAnimationLoop()
+
+  startAnimationLoop: ->
+    requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||window.webkitRequestAnimationFrame || window.msRequestAnimationFrame
+    start = window.mozAnimationStartTime # Only supported in FF. Other browsers can use something like Date.now().  
+    step = (timestamp) =>
+      @draw()
+      progress = timestamp - start
+      if (progress < 2000)
+        requestAnimationFrame(step)
+    requestAnimationFrame(step)
 
   onGamedata: (data) =>
     @board = new FitItBoard
     @board.initialize @context, data.board
-    # board.draw()
 
     @players = {}
     for key, player of data.players
       newPlayer = new FitItPlayer @context, player
-      # newPlayer.draw()
       @players[player.id] = newPlayer
 
     @draw()

@@ -21,7 +21,24 @@
       this.socket.on("gamedata", this.onGamedata);
       this.socket.on("move", this.onPlayerMoved);
       this.socket.on("player_join", this.onPlayerJoined);
-      return this.bindKeys();
+      this.bindKeys();
+      return this.startAnimationLoop();
+    };
+
+    _Class.prototype.startAnimationLoop = function() {
+      var requestAnimationFrame, start, step,
+        _this = this;
+      requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+      start = window.mozAnimationStartTime;
+      step = function(timestamp) {
+        var progress;
+        _this.draw();
+        progress = timestamp - start;
+        if (progress < 2000) {
+          return requestAnimationFrame(step);
+        }
+      };
+      return requestAnimationFrame(step);
     };
 
     _Class.prototype.onGamedata = function(data) {
