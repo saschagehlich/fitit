@@ -5,6 +5,8 @@
   window.FitItGame = FitItGame = (function() {
 
     function _Class(io) {
+      this.onPlayerMoved = __bind(this.onPlayerMoved, this);
+
       this.onGamedata = __bind(this.onGamedata, this);
 
       this.onConnect = __bind(this.onConnect, this);
@@ -30,7 +32,7 @@
         player = _ref[key];
         newPlayer = new FitItPlayer;
         newPlayer.initialize(this.context, player);
-        this.players[newPlayer.id] = newPlayer;
+        this.players[player.id] = newPlayer;
       }
       return this.draw();
     };
@@ -53,7 +55,7 @@
     };
 
     _Class.prototype.onPlayerMoved = function(playerData) {
-      this.players[playerData.id] = playerData;
+      this.players[playerData.id].playerData = playerData;
       return this.draw();
     };
 

@@ -13,13 +13,13 @@ module.exports = class
     player.socket.on "move", (direction) =>
       switch direction
         when 0
-          position.x += 1
+          player.position.x += 1
         when 1
-          position.y += 1
+          player.position.y += 1
         when 2
-          posiiton.x -= 1
+          player.position.x -= 1
         when 3
-          position.y -= 1
+          player.position.y -= 1
 
       @broadcastMove player
 

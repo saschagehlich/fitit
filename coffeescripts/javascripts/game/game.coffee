@@ -22,7 +22,7 @@ window.FitItGame = FitItGame = class
       newPlayer = new FitItPlayer
       newPlayer.initialize @context, player
       # newPlayer.draw()
-      @players[newPlayer.id] = newPlayer
+      @players[player.id] = newPlayer
 
     @draw()
 
@@ -39,8 +39,8 @@ window.FitItGame = FitItGame = class
         when 40 # arrow down
           @socket.emit 'move', 1
         
-  onPlayerMoved: (playerData) ->
-    @players[playerData.id] = playerData
+  onPlayerMoved: (playerData) =>
+    @players[playerData.id].playerData = playerData
     @draw()
 
 
