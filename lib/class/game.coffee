@@ -9,6 +9,22 @@ module.exports = class
     @id = +new Date()
     @tmpColors = @colors.slice(0)
 
+    @level = Levels.getRandomLevel()
+    @board = {}
+
+    # create empty board
+    for i in [0...13]
+      for j in [0...15]
+        unless @board.hasOwnProperty i
+          @board[i] = {}
+
+        @board[i][j] = -1
+
+    # put level into board
+    for i in [0...5]
+      for j in [0...5]
+        @board[4+i][5+j] = @level.data[i][j]
+
   addPlayer: (player) ->
     @playerId++
     player.id = @playerId
@@ -49,22 +65,6 @@ module.exports = class
     player.socket.on "disconnect", => @onPlayerDisconnect player
 
   startGame: ->
-    @level = Levels.getRandomLevel()
-    @board = {}
-
-    # create empty board
-    for i in [0...13]
-      for j in [0...15]
-        unless @board.hasOwnProperty i
-          @board[i] = {}
-
-        @board[i][j] = -1
-
-    # put level into board
-    for i in [0...5]
-      for j in [0...5]
-        @board[4+i][5+j] = @level.data[i][j]
-
     @broadcastInitialData()
 
 

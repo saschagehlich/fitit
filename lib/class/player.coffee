@@ -37,6 +37,7 @@ module.exports = class
   safeObj: ->
     return {
       id: @id
+      name: @name
       block: @block
       position: @position
       color: @color
