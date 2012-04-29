@@ -38,6 +38,7 @@ window.FitItGame = FitItGame = class
   bindKeys: ->
     $(document).unbind "keydown"
     $(document).keydown (event) =>
+      console.log event.keyCode
       switch event.keyCode
         when 37 # arrow left
           @socket.emit 'move', 2
@@ -49,6 +50,8 @@ window.FitItGame = FitItGame = class
           @socket.emit 'move', 1
         when 32 # space
           @socket.emit 'rotation', 1
+        when 70 # flip
+          @socket.emit 'flip'
         
   onPlayerMoved: (playerData) =>
     if @players.hasOwnProperty(playerData.id)
