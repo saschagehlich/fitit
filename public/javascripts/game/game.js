@@ -61,8 +61,7 @@
 
     _Class.prototype.changeToGameView = function(players) {
       var key, player;
-      $('.waiting').fadeOut('fast');
-      $('canvas').fadeIn('fast');
+      $('.info, .waiting, canvas').fadeOut('fast');
       $('.players').empty();
       for (key in players) {
         player = players[key];

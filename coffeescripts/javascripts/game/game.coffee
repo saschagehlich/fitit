@@ -34,11 +34,11 @@ window.FitItGame = FitItGame = class
     $('.waiting-for').text(4-parseInt(newLength))
 
   changeToGameView: (players) ->
-    $('.info, .waiting, canvas').fadeOut 'fast'
+    $('.info, .waiting').fadeOut 'fast'
     $('.players').empty()
     for key, player of players
       $("<li class=\"#{player.color}\">#{player.name}</li>").appendTo('.players')
-    $('.players').fadeIn 'fast'
+    $('.players, canvas').fadeIn 'fast'
 
   bindKeys: ->
     $(document).unbind "keydown"

@@ -21,7 +21,7 @@ body{overflow:hidden;background-color:#222}
 #wrapper{width:970px;height:585px;background-image:url("/images/background-image.png");background-repeat:no-repeat;position:absolute;-webkit-box-shadow:2px 2px 15px #000;-moz-box-shadow:2px 2px 15px #000;-o-border-radius:2px 2px 15px #000;box-shadow:2px 2px 15px #000;}
 #wrapper canvas,#wrapper .logo,#wrapper .info,#wrapper .controls,#wrapper .enter-name,#wrapper .waiting,#wrapper .players{position:absolute}
 #wrapper canvas{width:480px;height:416px;top:86px;left:118px;display:none}
-#wrapper .info{display:none;width:210px;height:240px;top:165px;right:130px;font-size:13px;font-family:'tahoma';color:#444;-webkit-text-shadow:0 0 2px #fff;-moz-text-shadow:0 0 2px #fff;text-shadow:0 0 2px #fff;}
+#wrapper .info{width:210px;height:240px;top:165px;right:130px;font-size:13px;font-family:'tahoma';color:#444;-webkit-text-shadow:0 0 2px #fff;-moz-text-shadow:0 0 2px #fff;text-shadow:0 0 2px #fff;}
 #wrapper .info p{margin:0 0 10px 0}
 .players,.info{width:210px;height:240px;top:165px;right:130px}
 .players{overflow:visible;color:#444;text-align:left;}
