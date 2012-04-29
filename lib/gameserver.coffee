@@ -8,25 +8,34 @@ module.exports = class
     @io.on "connection", @onConnection
 
   onConnection: (socket) =>
-    @queue.push socket
+    socket.on "name", (name) =>
+      @queue.push socket
+      socket.playerName = name
 
-    socket.emit "joined_queue", @queue.length
+      for waitingSocket in @queue
+        waitingSocket.emit "joined_queue", @queue.length
 
-    socket.inQueue = true
-    socket.on "disconnect", =>
-      if socket.inQueue
-        if ~@queue.indexOf(socket)
-          @queue.splice @queue.indexOf(socket), 1
-          console.log "socket disconnected and removed from queue"
+      socket.inQueue = true
+      socket.on "disconnect", =>
+        if socket.inQueue
+          if ~@queue.indexOf(socket)
+            @queue.splice @queue.indexOf(socket), 1
+            console.log "socket disconnected and removed from queue"
 
-    @checkQueue()
+        for waitingSocket in @queue
+          waitingSocket.emit "left_queue", @queue.length
+
+      @checkQueue()
 
   checkQueue: ->
     if @queue.length is 4
       game = new Game(@io)
       for socket in @queue
         player = new Player(socket)
+        player.name = socket.playerName
         game.addPlayer(player)
+
+      @queue = []
 
       game.startGame()
 
