@@ -131,8 +131,7 @@ module.exports = class
   onPlayerDisconnect: (player) =>
     if ~@players.indexOf(player)
       @players.splice @players.indexOf(player), 1
-
-      console.log "pushed back #{player.color}"
+      
       @tmpColors.push player.color
       @level.blocks.push player.blockId
       @broadcastPlayerLeave player

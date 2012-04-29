@@ -27,10 +27,10 @@ module.exports = class
 
   flipBlock: ->
     newData = []
-    for i in [0...block.length]
+    for i in [0...@block.length]
       newData[i] = []
-      for j in [block[i].length-1..0]
-        newData[i].push j
+      for j in [@block[i].length-1..0]
+        newData[i].push @block[i][j]
 
     @block = newData
 

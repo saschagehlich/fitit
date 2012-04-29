@@ -56,7 +56,6 @@
       var _this = this;
       $(document).unbind("keydown");
       return $(document).keydown(function(event) {
-        console.log(event.keyCode);
         switch (event.keyCode) {
           case 37:
             return _this.socket.emit('move', 2);
@@ -68,6 +67,8 @@
             return _this.socket.emit('move', 1);
           case 32:
             return _this.socket.emit('rotation', 1);
+          case 70:
+            return _this.socket.emit('flip');
         }
       });
     };
