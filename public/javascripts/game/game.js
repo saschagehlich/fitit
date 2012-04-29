@@ -61,13 +61,13 @@
 
     _Class.prototype.changeToGameView = function(players) {
       var key, player;
-      $('.info, .waiting, canvas').fadeOut('fast');
+      $('.info, .waiting').fadeOut('fast');
       $('.players').empty();
       for (key in players) {
         player = players[key];
         $("<li class=\"" + player.color + "\">" + player.name + "</li>").appendTo('.players');
       }
-      return $('.players').fadeIn('fast');
+      return $('.players, canvas').fadeIn('fast');
     };
 
     _Class.prototype.bindKeys = function() {
@@ -172,9 +172,10 @@
 
   $(function() {
     FitItHelper.centerWrapper();
-    return $(window).resize(function() {
+    $(window).resize(function() {
       return FitItHelper.centerWrapper();
     });
+    return $('input').focus();
   });
 
 }).call(this);

@@ -111,4 +111,5 @@ $ ->
   FitItHelper.centerWrapper()
   $(window).resize ->
     FitItHelper.centerWrapper()
+  $('input').focus()
     
