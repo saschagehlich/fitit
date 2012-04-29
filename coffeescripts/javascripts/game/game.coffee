@@ -38,7 +38,6 @@ window.FitItGame = FitItGame = class
   bindKeys: ->
     $(document).unbind "keydown"
     $(document).keydown (event) =>
-      console.log event.keyCode
       switch event.keyCode
         when 37 # arrow left
           @socket.emit 'move', 2
