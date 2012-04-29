@@ -26,9 +26,7 @@
       this.socket.on("connect", this.onConnect);
       this.context = $('#screen').get(0).getContext('2d');
       $('.winning').click(function() {
-        $('.winning').fadeOut("slow");
-        _this.changeToWaitingView();
-        return _this.socket.emit("name", _this.name);
+        return location.reload();
       });
     }
 

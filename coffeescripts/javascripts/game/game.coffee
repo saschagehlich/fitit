@@ -8,9 +8,10 @@ window.FitItGame = FitItGame = class
     @context = $('#screen').get(0).getContext('2d')
 
     $('.winning').click =>
-      $('.winning').fadeOut "slow"
-      @changeToWaitingView()
-      @socket.emit "name", @name
+      location.reload()
+      # $('.winning').fadeOut "slow"
+      # @changeToWaitingView()
+      # @socket.emit "name", @name
 
   onConnect: =>
     @socket.on "gamedata", @onGamedata
