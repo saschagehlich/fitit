@@ -29,6 +29,7 @@
       this.socket.on("player_join", this.onPlayerJoined);
       this.socket.on("player_leave", this.onPlayerLeave);
       this.socket.on("queue_length", this.onQueueLengthChanged);
+      this.socket.on("winning", this.onWinning);
       this.bindKeys();
       return this.bindNameInput();
     };
@@ -38,6 +39,10 @@
       return every(1000 / 30, function() {
         return _this.draw();
       });
+    };
+
+    _Class.prototype.onWinning = function() {
+      return $('.winning').fadeIn('fast');
     };
 
     _Class.prototype.onGamedata = function(data) {
@@ -175,7 +180,10 @@
     $(window).resize(function() {
       return FitItHelper.centerWrapper();
     });
-    return $('input').focus();
+    $('input').focus();
+    return $('.winning').click(function() {
+      return window.location.reload();
+    });
   });
 
 }).call(this);

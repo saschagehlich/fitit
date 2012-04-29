@@ -55,7 +55,8 @@ body
   .controls,
   .enter-name,
   .waiting,
-  .players
+  .players,
+  .winning
     position absolute
 
   canvas
@@ -102,3 +103,15 @@ body
       background-image url('/images/blue-tile.png')
     &.orange
       background-image url('/images/orange-tile.png')
+
+.winning
+  display none
+  cursor pointer
+  width 696px
+  height 284px
+  top 151px
+  left 140px
+  background-image url('/images/play-again-overlay.png')
+  background-repeat no-repeat
+  background-position center center
+  z-index 9000 // over 9000!!!

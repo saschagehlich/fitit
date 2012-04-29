@@ -12,6 +12,7 @@ window.FitItGame = FitItGame = class
     @socket.on "player_join", @onPlayerJoined
     @socket.on "player_leave", @onPlayerLeave
     @socket.on "queue_length", @onQueueLengthChanged
+    @socket.on "winning", @onWinning
 
     @bindKeys()
     @bindNameInput()
@@ -19,6 +20,9 @@ window.FitItGame = FitItGame = class
   startAnimationLoop: ->
     every 1000 / 30, =>
       @draw()
+
+  onWinning: ->
+    $('.winning').fadeIn 'fast'
 
   onGamedata: (data) =>
     @changeToGameView(data.players)
@@ -112,4 +116,5 @@ $ ->
   $(window).resize ->
     FitItHelper.centerWrapper()
   $('input').focus()
-    
+  $('.winning').click ->
+    window.location.reload()
