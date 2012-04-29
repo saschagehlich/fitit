@@ -1,11 +1,14 @@
 Levels = require "../data/levels"
 Blocks = require "../data/blocks"
 Player = require "../class/player"
-module.exports = class
+EventEmitter = require("events").EventEmitter
+
+module.exports = class extends EventEmitter
   players: []
   playerId: 0
   colors: ['green', 'orange', 'pink', 'blue']
   tmpColors: []
+
   constructor: (@io, @server) ->
     @id = +new Date()
     @tmpColors = @colors.slice(0)
@@ -103,12 +106,13 @@ module.exports = class
 
     # console.log "#{matchedTiles} / #{fittingTiles}"
     if matchedTiles is fittingTiles
-      for player in @players
+      @emit "solved"
+      usersToKick = @players.slice(0)
+      for player in usersToKick
         player.socket.emit "winning"
+        player.socket.disconnect()
 
   fixPlayerPosition: (player) =>
-    console.log player.position.x, player.block[0].length, Object.keys(@board[0]).length
-
     if parseInt(player.position.x) + parseInt(player.block[0].length) >= Object.keys(@board[0]).length
       player.position.x = Object.keys(@board[0]).length - player.block[0].length
 

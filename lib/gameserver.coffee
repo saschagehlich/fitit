@@ -50,8 +50,11 @@ module.exports = class
       game = new Game(@io, this)
       for socket in @queue
         player = new Player(socket)
-        # player.name = socket.playerName
         game.addPlayer(player)
+
+      game.on "solved", =>
+        if ~@games.indexOf(game)
+          @games.splice(@games.indexOf(game), 1)
 
       @queue = []
 
