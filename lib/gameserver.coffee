@@ -25,7 +25,7 @@ module.exports = class
         @queue.push socket
 
         for waitingSocket in @queue
-          waitingSocket.emit "joined_queue", @queue.length
+          waitingSocket.emit "queue_length", @queue.length
 
         socket.inQueue = true
         socket.on "disconnect", =>
@@ -34,7 +34,7 @@ module.exports = class
               @queue.splice @queue.indexOf(socket), 1
 
           for waitingSocket in @queue
-            waitingSocket.emit "left_queue", @queue.length
+            waitingSocket.emit "queue_length", @queue.length
 
         @checkQueue()
 
