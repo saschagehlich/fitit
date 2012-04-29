@@ -22,6 +22,7 @@ window.FitItGame = FitItGame = class
 
   onGamedata: (data) =>
     $('.waiting').fadeOut 'fast'
+    $('canvas').fadeIn 'fast'
 
     @board = new FitItBoard
     @board.initialize @context, data.board
