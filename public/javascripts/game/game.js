@@ -19,6 +19,8 @@
 
       this.onGamedata = __bind(this.onGamedata, this);
 
+      this.onGameEnded = __bind(this.onGameEnded, this);
+
       this.onConnect = __bind(this.onConnect, this);
 
       var _this = this;
@@ -37,6 +39,7 @@
       this.socket.on("player_leave", this.onPlayerLeave);
       this.socket.on("queue_length", this.onQueueLengthChanged);
       this.socket.on("winning", this.onWinning);
+      this.socket.on("game_ended", this.onGameEnded);
       return this.bindNameInput();
     };
 
@@ -45,6 +48,11 @@
       return every(1000 / 30, function() {
         return _this.draw();
       });
+    };
+
+    _Class.prototype.onGameEnded = function(err) {
+      alert("The game has ended due to this reason: " + err);
+      return location.reload();
     };
 
     _Class.prototype.onWinning = function() {

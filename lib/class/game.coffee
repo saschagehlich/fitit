@@ -106,7 +106,7 @@ module.exports = class extends EventEmitter
 
     # console.log "#{matchedTiles} / #{fittingTiles}"
     if matchedTiles is fittingTiles
-      @emit "solved"
+      @emit "game_ended"
       usersToKick = @players.slice(0)
       for player in usersToKick
         player.socket.emit "winning"
@@ -146,17 +146,8 @@ module.exports = class extends EventEmitter
     @checkSolved()
 
   onPlayerDisconnect: (player) =>
-    if ~@players.indexOf(player)
-      @players.splice @players.indexOf(player), 1
-      
-      @tmpColors.push player.color
-      @level.blocks.push player.blockId
-      @broadcastPlayerLeave player
-
-      # is there a player in the queue? ADD DAT BITCH!
-      if waitingSocket = @server.getLongestWaitingSocket()
-        player = new Player(waitingSocket)
-        @addPlayer player
+    unless player.willDisconnect?
+      @emit "game_ended", "`#{player.name}` left the game"
 
   broadcastInitialData: ->
     players = {}

@@ -9,64 +9,42 @@ module.exports = class
 
   onConnection: (socket) =>
     socket.on "name", (name) =>
-      console.log "got name: #{name}"
       socket.playerName = name
 
-      # do we need to add the player to the queue?
-      gameFound = false
-      for game in @games
-        if game.players.length < 4
-          chosenGame = game
-          gameFound = true
+      @queue.push socket
 
-      if gameFound
-        player = new Player(socket)
-        chosenGame.addPlayer(player)
-      else
-        @queue.push socket
+      for waitingSocket in @queue
+        waitingSocket.emit "queue_length", @queue.length
+
+      socket.inQueue = true
+      socket.on "disconnect", =>
+        if socket.inQueue
+          if ~@queue.indexOf(socket)
+            @queue.splice @queue.indexOf(socket), 1
 
         for waitingSocket in @queue
           waitingSocket.emit "queue_length", @queue.length
 
-        socket.inQueue = true
-        socket.on "disconnect", =>
-          if socket.inQueue
-            if ~@queue.indexOf(socket)
-              @queue.splice @queue.indexOf(socket), 1
-
-          for waitingSocket in @queue
-            waitingSocket.emit "queue_length", @queue.length
-
-        @checkQueue()
+      @checkQueue()
 
   checkQueue: ->
-    # check whether there is a game with less than 4 players
-    gameFound = false
-    for game in @games
-      if game.players.length < 4
-        game.addPlayer(player)
-        gameFound = true
-
-    if @queue.length is 4 and not gameFound
+    if @queue.length is 4
       game = new Game(@io, this)
       for socket in @queue
         player = new Player(socket)
         game.addPlayer(player)
 
-      game.on "solved", =>
+      game.on "game_ended", (err) =>
         if ~@games.indexOf(game)
           @games.splice(@games.indexOf(game), 1)
+
+        if err?
+          for p in game.players
+            p.willDisconnect = true
+            p.socket.emit "game_ended", err
 
       @queue = []
 
       game.startGame()
 
       @games.push game
-
-  getLongestWaitingSocket: ->
-    if @queue.length > 0
-      socket = @queue[0]
-      @queue.shift()
-      return socket
-    else
-      return false

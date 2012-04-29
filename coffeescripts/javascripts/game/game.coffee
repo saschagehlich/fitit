@@ -20,12 +20,17 @@ window.FitItGame = FitItGame = class
     @socket.on "player_leave", @onPlayerLeave
     @socket.on "queue_length", @onQueueLengthChanged
     @socket.on "winning", @onWinning
+    @socket.on "game_ended", @onGameEnded
 
     @bindNameInput()
 
   startAnimationLoop: ->
     every 1000 / 30, =>
       @draw()
+
+  onGameEnded: (err) =>
+    alert "The game has ended due to this reason: #{err}"
+    location.reload()
 
   onWinning: ->
     $('.winning').fadeIn 'fast'
