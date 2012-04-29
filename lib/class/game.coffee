@@ -109,6 +109,7 @@ module.exports = class extends EventEmitter
       @emit "game_ended"
       usersToKick = @players.slice(0)
       for player in usersToKick
+        player.socket.willDisconnect = true
         player.socket.emit "winning"
         player.socket.disconnect()
 
