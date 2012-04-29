@@ -107,7 +107,8 @@
 
     _Class.prototype.draw = function() {
       var key, player, _ref, _results;
-      this.context.clearRect(this.context.width, this.context.height);
+      this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+      console.log(this.context.canvas.width, this.context.canvas.height);
       this.board.draw();
       _ref = this.players;
       _results = [];

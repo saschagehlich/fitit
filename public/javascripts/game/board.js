@@ -17,8 +17,6 @@
     Board.prototype.initialize = function(context, boardData) {
       this.context = context;
       this.boardData = boardData;
-      this.defaultImage = new Image();
-      this.defaultImage.src = "/images/default-tile.png";
       this.fittingImage = new Image();
       this.fittingImage.src = "/images/fitting-tile.png";
     };
@@ -41,8 +39,6 @@
               y = rowIndex * 32;
               if (value > 0) {
                 return _this.context.drawImage(_this.fittingImage, x, y);
-              } else {
-                return _this.context.drawImage(_this.defaultImage, x, y);
               }
             })(value, colIndex, rowIndex));
           }
