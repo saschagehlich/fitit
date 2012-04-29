@@ -110,8 +110,7 @@ module.exports = class extends EventEmitter
       usersToKick = @players.slice(0)
       for player in usersToKick
         player.socket.emit "winning"
-        player.socket.leave("game-#{@id}")
-        @players.splice @players.indexOf(player), 1
+        player.socket.disconnect()
 
   fixPlayerPosition: (player) =>
     if parseInt(player.position.x) + parseInt(player.block[0].length) >= Object.keys(@board[0]).length
