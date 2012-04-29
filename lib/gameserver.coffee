@@ -8,32 +8,35 @@ module.exports = class
     @io.on "connection", @onConnection
 
   onConnection: (socket) =>
-    # do we need to add the player to the queue?
-    gameFound = false
-    for game in @games
-      if game.players.length < 4
-        chosenGame = game
-        gameFound = true
+    socket.on "name", (name) =>
+      socket.playerName = name
 
-    if gameFound
-      player = new Player(socket)
-      chosenGame.addPlayer(player)
-    else
-      @queue.push socket
+      # do we need to add the player to the queue?
+      gameFound = false
+      for game in @games
+        if game.players.length < 4
+          chosenGame = game
+          gameFound = true
 
-      for waitingSocket in @queue
-        waitingSocket.emit "joined_queue", @queue.length
-
-      socket.inQueue = true
-      socket.on "disconnect", =>
-        if socket.inQueue
-          if ~@queue.indexOf(socket)
-            @queue.splice @queue.indexOf(socket), 1
+      if gameFound
+        player = new Player(socket)
+        chosenGame.addPlayer(player)
+      else
+        @queue.push socket
 
         for waitingSocket in @queue
-          waitingSocket.emit "left_queue", @queue.length
+          waitingSocket.emit "joined_queue", @queue.length
 
-      @checkQueue()
+        socket.inQueue = true
+        socket.on "disconnect", =>
+          if socket.inQueue
+            if ~@queue.indexOf(socket)
+              @queue.splice @queue.indexOf(socket), 1
+
+          for waitingSocket in @queue
+            waitingSocket.emit "left_queue", @queue.length
+
+        @checkQueue()
 
   checkQueue: ->
     # check whether there is a game with less than 4 players

@@ -12,6 +12,9 @@ module.exports = class
       x: 0
       y: 0
 
+    if @socket.playerName?
+      @name = @socket.playerName
+
   rotate: (block) ->
     newData = []
     for i in [block.length-1..0]
