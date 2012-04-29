@@ -67,7 +67,7 @@ window.FitItGame = FitItGame = class
       i++
 
   draw: ->
-    @context.clearRect @context.width, @context.height
+    @context.clearRect 0, 0, @context.canvas.width, @context.canvas.height
     @board.draw()
     for key, player of @players
       player.draw()
