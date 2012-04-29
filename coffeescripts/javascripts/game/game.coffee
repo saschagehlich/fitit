@@ -13,7 +13,6 @@ window.FitItGame = FitItGame = class
     @socket.on "player_leave", @onPlayerLeave
     @socket.on "queue_length", @onQueueLengthChanged
 
-    @bindKeys()
     @bindNameInput()
 
   startAnimationLoop: ->
@@ -34,6 +33,7 @@ window.FitItGame = FitItGame = class
     $('.waiting-for').text(4-parseInt(newLength))
 
   changeToGameView: (players) ->
+    @bindKeys()
     $('.info, .waiting').fadeOut 'fast'
     $('.players').empty()
     for key, player of players

@@ -29,7 +29,6 @@
       this.socket.on("player_join", this.onPlayerJoined);
       this.socket.on("player_leave", this.onPlayerLeave);
       this.socket.on("queue_length", this.onQueueLengthChanged);
-      this.bindKeys();
       return this.bindNameInput();
     };
 
@@ -61,6 +60,7 @@
 
     _Class.prototype.changeToGameView = function(players) {
       var key, player;
+      this.bindKeys();
       $('.info, .waiting').fadeOut('fast');
       $('.players').empty();
       for (key in players) {
