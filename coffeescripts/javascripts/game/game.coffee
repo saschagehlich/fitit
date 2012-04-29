@@ -41,16 +41,22 @@ window.FitItGame = FitItGame = class
       switch event.keyCode
         when 37 # arrow left
           @socket.emit 'move', 2
+          return false
         when 38 # arrow up
           @socket.emit 'move', 3
+          return false
         when 39 # arrow right
           @socket.emit 'move', 0
+          return false
         when 40 # arrow down
           @socket.emit 'move', 1
+          return false
         when 32 # space
           @socket.emit 'rotation', 1
+          return false
         when 70 # flip
           @socket.emit 'flip'
+          return false
         
   onPlayerMoved: (playerData) =>
     if @players.hasOwnProperty(playerData.id)

@@ -58,17 +58,23 @@
       return $(document).keydown(function(event) {
         switch (event.keyCode) {
           case 37:
-            return _this.socket.emit('move', 2);
+            _this.socket.emit('move', 2);
+            return false;
           case 38:
-            return _this.socket.emit('move', 3);
+            _this.socket.emit('move', 3);
+            return false;
           case 39:
-            return _this.socket.emit('move', 0);
+            _this.socket.emit('move', 0);
+            return false;
           case 40:
-            return _this.socket.emit('move', 1);
+            _this.socket.emit('move', 1);
+            return false;
           case 32:
-            return _this.socket.emit('rotation', 1);
+            _this.socket.emit('rotation', 1);
+            return false;
           case 70:
-            return _this.socket.emit('flip');
+            _this.socket.emit('flip');
+            return false;
         }
       });
     };

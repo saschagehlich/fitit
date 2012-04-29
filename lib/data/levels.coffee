@@ -37,8 +37,7 @@ module.exports =
   getRandomLevel: ->
     i = Math.floor(Math.random()*@levels.length)
     level = @levels[i]
-    blockIndex = Math.round(Math.random()*level.blocks.length-1)
-    console.log blockIndex
+    blockIndex = Math.round(Math.random()*(level.blocks.length-1))
     level.blocks = level.blocks[blockIndex]
 
     return level

@@ -94,14 +94,24 @@ module.exports = class
     for player in @players
       for i in [0...player.block.length]
         for j in [0...player.block[i].length]
-          # console.log boardCopy[player.position.y + i][player.position.x + j], player.block[i][j]
-          if boardCopy[player.position.y + i][player.position.x + j] is 1 and player.block[i][j] is 1
-            boardCopy[player.position.y + i][player.position.x + j] = 2
+          y = player.position.y + i
+          x = player.position.x + j
+          if boardCopy[y][x] is 1 and player.block[i][j] is 1
+            boardCopy[y][x] = 2
             matchedTiles++
 
     # console.log "#{matchedTiles} / #{fittingTiles}"
     if matchedTiles is fittingTiles
       null
+
+  fixPlayerPosition: (player) =>
+    console.log player.position.x, player.block[0].length, Object.keys(@board[0]).length
+
+    if parseInt(player.position.x) + parseInt(player.block[0].length) >= Object.keys(@board[0]).length
+      player.position.x = Object.keys(@board[0]).length - player.block[0].length
+
+    if parseInt(player.position.y) + parseInt(player.block.length) >= Object.keys(@board).length
+      player.position.y = Object.keys(@board).length - player.block.length
 
   onPlayerMove: (player, direction) =>
     if @checkBounds(player, direction)
@@ -120,6 +130,7 @@ module.exports = class
 
   onPlayerRotation: (player, direction) =>
     player.rotateBlock()
+    @fixPlayerPosition player
     @broadcastMove player
     @checkSolved()
 
