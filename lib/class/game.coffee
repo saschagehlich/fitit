@@ -45,6 +45,7 @@ module.exports = class
 
     player.socket.on "move", (direction) => @onPlayerMove player, direction
     player.socket.on "rotation", (direction) => @onPlayerRotation player, direction
+    player.socket.on "flip", => @onPlayerFlip player
     player.socket.on "disconnect", => @onPlayerDisconnect player
 
   startGame: ->
@@ -118,11 +119,13 @@ module.exports = class
       @checkSolved()
 
   onPlayerRotation: (player, direction) =>
-    player.rotation += direction
     player.rotateBlock()
-
     @broadcastMove player
+    @checkSolved()
 
+  onPlayerFlip: (player) =>
+    player.flipBlock()
+    @broadcastMove player
     @checkSolved()
 
   onPlayerDisconnect: (player) =>

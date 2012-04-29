@@ -25,6 +25,15 @@ module.exports = class
   rotateBlock: ->
     @block = @rotate(@block)
 
+  flipBlock: ->
+    newData = []
+    for i in [0...block.length]
+      newData[i] = []
+      for j in [block[i].length-1..0]
+        newData[i].push j
+
+    @block = newData
+
   safeObj: ->
     return {
       id: @id
