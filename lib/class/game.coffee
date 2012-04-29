@@ -150,7 +150,7 @@ module.exports = class
       @broadcastPlayerLeave player
 
       # is there a player in the queue? ADD DAT BITCH!
-      if waitingSocket = global.getLongestWaitingSocket()
+      if waitingSocket = @server.getLongestWaitingSocket()
         player = new Player(waitingSocket)
         @addPlayer player
 
