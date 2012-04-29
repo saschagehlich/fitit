@@ -8,9 +8,18 @@ module.exports = class
     @io.on "connection", @onConnection
 
   onConnection: (socket) =>
-    socket.on "name", (name) =>
+    # do we need to add the player to the queue?
+    gameFound = false
+    for game in @games
+      if game.players.length < 4
+        chosenGame = game
+        gameFound = true
+
+    if gameFound
+      player = new Player(socket)
+      chosenGame.addPlayer(player)
+    else
       @queue.push socket
-      socket.playerName = name
 
       for waitingSocket in @queue
         waitingSocket.emit "joined_queue", @queue.length
@@ -20,7 +29,6 @@ module.exports = class
         if socket.inQueue
           if ~@queue.indexOf(socket)
             @queue.splice @queue.indexOf(socket), 1
-            console.log "socket disconnected and removed from queue"
 
         for waitingSocket in @queue
           waitingSocket.emit "left_queue", @queue.length
@@ -28,11 +36,18 @@ module.exports = class
       @checkQueue()
 
   checkQueue: ->
-    if @queue.length is 4
-      game = new Game(@io)
+    # check whether there is a game with less than 4 players
+    gameFound = false
+    for game in @games
+      if game.players.length < 4
+        game.addPlayer(player)
+        gameFound = true
+
+    if @queue.length is 4 and not gameFound
+      game = new Game(@io, this)
       for socket in @queue
         player = new Player(socket)
-        player.name = socket.playerName
+        # player.name = socket.playerName
         game.addPlayer(player)
 
       @queue = []
@@ -40,3 +55,11 @@ module.exports = class
       game.startGame()
 
       @games.push game
+
+  getLongestWaitingSocket: ->
+    if @queue.length > 0
+      socket = @queue[0]
+      @queue.shift()
+      return socket
+    else
+      return false

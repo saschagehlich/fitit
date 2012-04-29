@@ -4,6 +4,7 @@ gameserver = require "./lib/gameserver"
 
 app = express.createServer()
 io  = socketio.listen(app)
+io.set "log level", 1
 
 app.configure ->
   

@@ -1,11 +1,12 @@
 Levels = require "../data/levels"
 Blocks = require "../data/blocks"
+Player = require "../class/player"
 module.exports = class
   players: []
   playerId: 0
   colors: ['green', 'orange', 'pink', 'blue']
   tmpColors: []
-  constructor: (@io) ->
+  constructor: (@io, @server) ->
     @id = +new Date()
     @tmpColors = @colors.slice(0)
 
@@ -102,7 +103,8 @@ module.exports = class
 
     # console.log "#{matchedTiles} / #{fittingTiles}"
     if matchedTiles is fittingTiles
-      null
+      for player in @players
+        player.socket.emit "winning"
 
   fixPlayerPosition: (player) =>
     console.log player.position.x, player.block[0].length, Object.keys(@board[0]).length
@@ -146,6 +148,11 @@ module.exports = class
       @tmpColors.push player.color
       @level.blocks.push player.blockId
       @broadcastPlayerLeave player
+
+      # is there a player in the queue? ADD DAT BITCH!
+      if waitingSocket = global.getLongestWaitingSocket()
+        player = new Player(waitingSocket)
+        @addPlayer player
 
   broadcastInitialData: ->
     players = {}
