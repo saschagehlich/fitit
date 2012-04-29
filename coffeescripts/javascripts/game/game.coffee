@@ -34,8 +34,7 @@ window.FitItGame = FitItGame = class
     $('.waiting-for').text(4-parseInt(newLength))
 
   changeToGameView: (players) ->
-    $('.waiting').fadeOut 'fast'
-    $('canvas').fadeIn 'fast'
+    $('.info, .waiting, canvas').fadeOut 'fast'
     $('.players').empty()
     for key, player of players
       $("<li class=\"#{player.color}\">#{player.name}</li>").appendTo('.players')
