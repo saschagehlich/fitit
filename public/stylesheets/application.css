@@ -11,7 +11,7 @@ a img{border:none}
 :focus{outline:0}
 ul,ol,li{list-style-type:none;list-style-position:inside}
 html{overflow:hidden}
-body{overflow:hidden;background-color:#222}
+body{overflow:hidden;background-image:url("/images/concrete-background.jpg");background-repeat:repeat}
 #container{position:absolute;top:0;left:0;width:100%;height:100%}
 .waiting{width:480px;height:416px;top:179px;left:117px;text-align:center;background-image:url("/images/waiting-teaser.png");background-repeat:no-repeat;background-position:center 80px}
 .enter-name{width:350px;height:65px;top:214px;left:182px;text-align:center}
@@ -22,8 +22,8 @@ body{overflow:hidden;background-color:#222}
 #wrapper{width:970px;height:585px;background-image:url("/images/background-image.png");background-repeat:no-repeat;position:absolute;-webkit-box-shadow:2px 2px 15px #000;-moz-box-shadow:2px 2px 15px #000;-o-border-radius:2px 2px 15px #000;box-shadow:2px 2px 15px #000;}
 #wrapper canvas,#wrapper .logo,#wrapper .info,#wrapper .controls,#wrapper .enter-name,#wrapper .waiting,#wrapper .players,#wrapper .winning{position:absolute}
 #wrapper canvas{width:480px;height:416px;top:86px;left:118px;display:none}
-#wrapper .info{font-size:13px;font-family:'tahoma';color:#444;-webkit-text-shadow:0 0 2px #fff;-moz-text-shadow:0 0 2px #fff;text-shadow:0 0 2px #fff;}
-#wrapper .info p{margin:0 0 10px 0}
+#wrapper .info,#wrapper .credits,#wrapper .credits a{font-size:13px;font-family:'tahoma';color:#444;-webkit-text-shadow:0 0 2px #fff;-moz-text-shadow:0 0 2px #fff;text-shadow:0 0 2px #fff;}
+#wrapper .info p,#wrapper .credits p,#wrapper .credits a p{margin:0 0 10px 0}
 .players,.info{width:210px;height:240px;top:180px;right:130px}
 .players{overflow:visible;color:#444;text-align:left;}
 .players li{height:35px;padding:10px 0 10px 45px;background-repeat:no-repeat;background-position:0 center;}
@@ -32,3 +32,5 @@ body{overflow:hidden;background-color:#222}
 .players li.blue{background-image:url("/images/blue-tile.png")}
 .players li.orange{background-image:url("/images/orange-tile.png")}
 .winning{display:none;cursor:pointer;width:696px;height:284px;top:151px;left:140px;background-image:url("/images/play-again-overlay.png");background-repeat:no-repeat;background-position:center center;z-index:9000}
+.credits{position:absolute;width:300px;height:60px;bottom:17px;left:330px;}
+.credits .links{margin-left:52px;margin-top:-18px}

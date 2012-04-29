@@ -2,7 +2,8 @@ html
   overflow hidden
 body
   overflow hidden
-  background-color #222222
+  background-image url('/images/concrete-background.jpg')
+  background-repeat repeat
 
 #container
   position absolute
@@ -75,7 +76,9 @@ body
     left 118px
     display none
 
-  .info
+  .info,
+  .credits,
+  .credits a
     font-size 13px
     font-family 'tahoma'
     color #444444
@@ -120,3 +123,13 @@ body
   background-repeat no-repeat
   background-position center center
   z-index 9000 // over 9000!!!
+
+.credits
+  position absolute
+  width: 300px
+  height: 60px
+  bottom: 17px
+  left: 330px
+  .links
+    margin-left 52px
+    margin-top -18px
