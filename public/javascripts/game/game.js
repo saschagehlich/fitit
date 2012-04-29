@@ -122,4 +122,29 @@
 
   })();
 
+  if (window.FitItHelper == null) {
+    window.FitItHelper = {};
+  }
+
+  window.FitItHelper.centerWrapper = function() {
+    var left, top, windowHeight, windowWidth, wrapperHeight, wrapperWidth;
+    wrapperWidth = 970;
+    wrapperHeight = 585;
+    windowWidth = $(window).width();
+    windowHeight = $(window).height();
+    left = (windowWidth - wrapperWidth) / 2;
+    top = (windowHeight - wrapperHeight) / 2;
+    return $('#wrapper').css({
+      top: top,
+      left: left
+    });
+  };
+
+  $(function() {
+    FitItHelper.centerWrapper();
+    return $(window).resize(function() {
+      return FitItHelper.centerWrapper();
+    });
+  });
+
 }).call(this);
