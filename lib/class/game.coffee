@@ -1,17 +1,34 @@
-Spaces = require "../data/spaces"
+Levels = require "../data/levels"
+Blocks = require "../data/blocks"
 module.exports = class
   players: []
   playerId: 0
   colors: ['green', 'orange', 'pink', 'blue']
+  tmpColors: []
   constructor: (@io) ->
     @id = +new Date()
+    @tmpColors = @colors.slice(0)
 
   addPlayer: (player) ->
     @playerId++
     player.id = @playerId
 
-    player.color = @colors[0]
-    @colors.shift()
+    player.color = @tmpColors[0]
+    player.blockId = @level.blocks[0]
+    player.block = Blocks.blocks[player.blockId]
+
+    switch @colors.indexOf(player.color)
+      when 0
+        player.position = { x: 1, y: 1 }
+      when 1
+        player.position = { x: Object.keys(@board[0]).length - player.block[0].length - 1, y: 1 }
+      when 2
+        player.position = { x: Object.keys(@board[0]).length - player.block[0].length - 1, y: Object.keys(@board).length - player.block.length - 1 }
+      when 3
+        player.position = { x: 1, y: Object.keys(@board).length - player.block.length - 1 }
+
+    @tmpColors.shift()
+    @level.blocks.shift()
 
     @players.push(player)
     player.socket.join("game-#{@id}")
@@ -31,7 +48,7 @@ module.exports = class
     player.socket.on "disconnect", => @onPlayerDisconnect player
 
   startGame: ->
-    hittingSpace = Spaces.getRandomSpace()
+    @level = Levels.getRandomLevel()
     @board = {}
 
     # create empty board
@@ -42,10 +59,10 @@ module.exports = class
 
         @board[i][j] = -1
 
-    # put hittingspace into board
+    # put level into board
     for i in [0...5]
       for j in [0...5]
-        @board[4+i][5+j] = hittingSpace[i][j]
+        @board[4+i][5+j] = @level.data[i][j]
 
     @broadcastInitialData()
 
@@ -76,12 +93,12 @@ module.exports = class
     for player in @players
       for i in [0...player.block.length]
         for j in [0...player.block[i].length]
-          console.log boardCopy[player.position.y + i][player.position.x + j], player.block[i][j]
+          # console.log boardCopy[player.position.y + i][player.position.x + j], player.block[i][j]
           if boardCopy[player.position.y + i][player.position.x + j] is 1 and player.block[i][j] is 1
             boardCopy[player.position.y + i][player.position.x + j] = 2
             matchedTiles++
 
-    console.log "#{matchedTiles} / #{fittingTiles}"
+    # console.log "#{matchedTiles} / #{fittingTiles}"
     if matchedTiles is fittingTiles
       null
 
@@ -121,6 +138,7 @@ module.exports = class
         @players.splice @players.indexOf(player), 1
 
       @colors.push player.color
+      @level.blocks.push player.blockId
       @broadcastPlayerLeave player
 
   broadcastInitialData: ->

@@ -1,15 +1,16 @@
 module.exports =
-  spaces:
+  levels:
     [
-      [
+      data: [
         [-1, -1, 1, 1, 1],
         [-1, 1, 1, 1, -1],
         [-1, -1, 1, 1, 1],
         [-1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1]
-      ]
+      ],
+      blocks: [1, 2, 3, 4]
     ]
 
-  getRandomSpace: ->
-    i = Math.floor(Math.random()*@spaces.length)
-    return @spaces[i]
+  getRandomLevel: ->
+    i = Math.floor(Math.random()*@levels.length)
+    return @levels[i]

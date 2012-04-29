@@ -1,14 +1,14 @@
-Blocks = require "../data/blocks"
 module.exports = class
   constructor: (@socket) ->
     @socket.player = this
 
     @name = "Arsch"
-    @block = Blocks.getRandomBlock()
+    @blockId = 0
+    @block = null
 
     @color = null
 
-    @rotation = 0
+    @rotation = Math.round(Math.random()*3)
     @position =
       x: 0
       y: 0
