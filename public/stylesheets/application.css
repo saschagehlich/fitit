@@ -16,10 +16,17 @@ body{overflow:hidden;background-color:#222}
 .enter-name,.waiting{width:350px;height:65px;top:214px;left:182px;text-align:center}
 .enter-name{background-image:url("/images/whats-name-label.png");background-repeat:no-repeat;background-position:center 4px;}
 .enter-name input{margin-top:32px;width:350px;height:30px;background-image:url("/images/black-pixel.png");background-color:transparent;background-repeat:repeat;border:none}
-.waiting,input{color:#ddd;text-align:center;font-size:20px;font-family:'tahoma'}
+.waiting,input,.players{color:#ddd;text-align:center;font-size:20px;font-family:'tahoma'}
 .waiting{display:none}
 #wrapper{width:970px;height:585px;background-image:url("/images/background-image.png");background-repeat:no-repeat;position:absolute;-webkit-box-shadow:2px 2px 15px #000;-moz-box-shadow:2px 2px 15px #000;-o-border-radius:2px 2px 15px #000;box-shadow:2px 2px 15px #000;}
-#wrapper canvas,#wrapper .logo,#wrapper .info,#wrapper .controls,#wrapper .enter-name,#wrapper .waiting{position:absolute}
+#wrapper canvas,#wrapper .logo,#wrapper .info,#wrapper .controls,#wrapper .enter-name,#wrapper .waiting,#wrapper .players{position:absolute}
 #wrapper canvas{width:480px;height:416px;top:86px;left:118px;display:none}
-#wrapper .info{width:210px;height:240px;top:165px;right:130px;font-size:13px;font-family:'tahoma';color:#444;-webkit-text-shadow:0 0 2px #fff;-moz-text-shadow:0 0 2px #fff;text-shadow:0 0 2px #fff;}
+#wrapper .info{display:none;width:210px;height:240px;top:165px;right:130px;font-size:13px;font-family:'tahoma';color:#444;-webkit-text-shadow:0 0 2px #fff;-moz-text-shadow:0 0 2px #fff;text-shadow:0 0 2px #fff;}
 #wrapper .info p{margin:0 0 10px 0}
+.players,.info{width:210px;height:240px;top:165px;right:130px}
+.players{overflow:visible;color:#444;text-align:left;}
+.players li{height:35px;padding:10px 0 10px 45px;background-repeat:no-repeat;background-position:0 center;}
+.players li.green{background-image:url("/images/green-tile.png")}
+.players li.pink{background-image:url("/images/pink-tile.png")}
+.players li.blue{background-image:url("/images/blue-tile.png")}
+.players li.orange{background-image:url("/images/orange-tile.png")}

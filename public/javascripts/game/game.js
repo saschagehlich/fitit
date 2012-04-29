@@ -42,8 +42,7 @@
 
     _Class.prototype.onGamedata = function(data) {
       var key, newPlayer, player, _ref;
-      $('.waiting').fadeOut('fast');
-      $('canvas').fadeIn('fast');
+      this.changeToGameView(data.players);
       this.board = new FitItBoard;
       this.board.initialize(this.context, data.board);
       this.players = {};
@@ -58,6 +57,18 @@
 
     _Class.prototype.onQueueLengthChanged = function(newLength) {
       return $('.waiting-for').text(4 - parseInt(newLength));
+    };
+
+    _Class.prototype.changeToGameView = function(players) {
+      var key, player;
+      $('.waiting').fadeOut('fast');
+      $('canvas').fadeIn('fast');
+      $('.players').empty();
+      for (key in players) {
+        player = players[key];
+        $("<li class=\"" + player.color + "\">" + player.name + "</li>").appendTo('.players');
+      }
+      return $('.players').fadeIn('fast');
     };
 
     _Class.prototype.bindKeys = function() {

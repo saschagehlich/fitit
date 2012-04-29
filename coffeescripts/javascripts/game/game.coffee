@@ -21,21 +21,25 @@ window.FitItGame = FitItGame = class
       @draw()
 
   onGamedata: (data) =>
-    $('.waiting').fadeOut 'fast'
-    $('canvas').fadeIn 'fast'
-
+    @changeToGameView(data.players)
     @board = new FitItBoard
     @board.initialize @context, data.board
-
     @players = {}
     for key, player of data.players
       newPlayer = new FitItPlayer @context, player
       @players[player.id] = newPlayer
-
     @startAnimationLoop()
 
   onQueueLengthChanged: (newLength) ->
     $('.waiting-for').text(4-parseInt(newLength))
+
+  changeToGameView: (players) ->
+    $('.waiting').fadeOut 'fast'
+    $('canvas').fadeIn 'fast'
+    $('.players').empty()
+    for key, player of players
+      $("<li class=\"#{player.color}\">#{player.name}</li>").appendTo('.players')
+    $('.players').fadeIn 'fast'
 
   bindKeys: ->
     $(document).unbind "keydown"
