@@ -9,6 +9,7 @@ module.exports = class
 
   onConnection: (socket) =>
     socket.on "name", (name) =>
+      console.log "got name: #{name}"
       socket.playerName = name
 
       # do we need to add the player to the queue?

@@ -8,6 +8,8 @@
 
   window.FitItGame = FitItGame = (function() {
 
+    _Class.prototype.name = null;
+
     function _Class(io) {
       this.onPlayerLeave = __bind(this.onPlayerLeave, this);
 
@@ -18,9 +20,16 @@
       this.onGamedata = __bind(this.onGamedata, this);
 
       this.onConnect = __bind(this.onConnect, this);
+
+      var _this = this;
       this.socket = io.connect("http://" + window.location.hostname + ":8080");
       this.socket.on("connect", this.onConnect);
       this.context = $('#screen').get(0).getContext('2d');
+      $('.winning').click(function() {
+        $('.winning').fadeOut("slow");
+        _this.changeToWaitingView();
+        return _this.socket.emit("name", _this.name);
+      });
     }
 
     _Class.prototype.onConnect = function() {
@@ -41,13 +50,16 @@
     };
 
     _Class.prototype.onWinning = function() {
-      return $('.winning').fadeIn('fast');
+      $('.winning').fadeIn('fast');
+      return this.players = {};
     };
 
     _Class.prototype.onGamedata = function(data) {
       var key, newPlayer, player, _ref;
       this.changeToGameView(data.players);
-      this.board = new FitItBoard;
+      if (!this.board) {
+        this.board = new FitItBoard;
+      }
       this.board.initialize(this.context, data.board);
       this.players = {};
       _ref = data.players;
@@ -61,6 +73,12 @@
 
     _Class.prototype.onQueueLengthChanged = function(newLength) {
       return $('.waiting-for').text(4 - parseInt(newLength));
+    };
+
+    _Class.prototype.changeToWaitingView = function() {
+      $(document).unbind("keydown");
+      $('.players, canvas').fadeOut('fast');
+      return $('.info, .waiting').fadeIn('fast');
     };
 
     _Class.prototype.changeToGameView = function(players) {
@@ -107,6 +125,7 @@
       return $('form').submit(function(event) {
         event.preventDefault();
         if ($('input').val()) {
+          _this.name = $('input').val();
           _this.socket.emit('name', $('input').val());
           $('.enter-name').fadeOut('fast');
           $('.waiting').fadeIn('fast');
@@ -184,10 +203,7 @@
     $(window).resize(function() {
       return FitItHelper.centerWrapper();
     });
-    $('input').focus();
-    return $('.winning').click(function() {
-      return window.location.reload();
-    });
+    return $('input').focus();
   });
 
 }).call(this);

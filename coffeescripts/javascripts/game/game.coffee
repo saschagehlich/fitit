@@ -1,10 +1,16 @@
 window.every = (t, f) -> setInterval f, t
 
 window.FitItGame = FitItGame = class
+  name: null
   constructor: (io) ->
     @socket = io.connect "http://#{window.location.hostname}:8080"
     @socket.on "connect", @onConnect
     @context = $('#screen').get(0).getContext('2d')
+
+    $('.winning').click =>
+      $('.winning').fadeOut "slow"
+      @changeToWaitingView()
+      @socket.emit "name", @name
 
   onConnect: =>
     @socket.on "gamedata", @onGamedata
@@ -22,10 +28,12 @@ window.FitItGame = FitItGame = class
 
   onWinning: ->
     $('.winning').fadeIn 'fast'
+    @players = {}
 
   onGamedata: (data) =>
     @changeToGameView(data.players)
-    @board = new FitItBoard
+    unless @board
+      @board = new FitItBoard
     @board.initialize @context, data.board
     @players = {}
     for key, player of data.players
@@ -35,6 +43,11 @@ window.FitItGame = FitItGame = class
 
   onQueueLengthChanged: (newLength) ->
     $('.waiting-for').text(4-parseInt(newLength))
+
+  changeToWaitingView: ->
+    $(document).unbind "keydown"
+    $('.players, canvas').fadeOut 'fast'
+    $('.info, .waiting').fadeIn 'fast'
 
   changeToGameView: (players) ->
     @bindKeys()
@@ -71,6 +84,8 @@ window.FitItGame = FitItGame = class
     $('form').submit (event) =>
       event.preventDefault()
       if $('input').val()
+        @name = $('input').val()
+
         @socket.emit 'name', $('input').val()
         # hide input
         $('.enter-name').fadeOut 'fast'
@@ -118,5 +133,4 @@ $ ->
   $(window).resize ->
     FitItHelper.centerWrapper()
   $('input').focus()
-  $('.winning').click ->
-    window.location.reload()
+

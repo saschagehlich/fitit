@@ -29,9 +29,6 @@
 
     Player.prototype.draw = function() {
       var row, value, _i, _len, _ref, _results;
-      if (!this.playerData.block) {
-        console.log(this.playerData);
-      }
       _ref = this.playerData.block;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {

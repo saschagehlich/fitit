@@ -17,8 +17,6 @@ class Player
       @tileImages[key] = i
 
   draw: ->
-    unless @playerData.block
-      console.log @playerData
     for row in @playerData.block
       for value in row
         do (value) =>
