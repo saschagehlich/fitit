@@ -43,6 +43,7 @@
     _Class.prototype.onGamedata = function(data) {
       var key, newPlayer, player, _ref;
       $('.waiting').fadeOut('fast');
+      $('canvas').fadeIn('fast');
       this.board = new FitItBoard;
       this.board.initialize(this.context, data.board);
       this.players = {};
