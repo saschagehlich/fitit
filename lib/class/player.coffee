@@ -8,7 +8,6 @@ module.exports = class
 
     @color = null
 
-    @rotation = Math.round(Math.random()*3)
     @position =
       x: 0
       y: 0

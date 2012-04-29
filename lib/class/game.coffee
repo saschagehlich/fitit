@@ -119,14 +119,6 @@ module.exports = class
 
   onPlayerRotation: (player, direction) =>
     player.rotation += direction
-
-    if player.rotation > 3
-      player.rotation = 0
-    else if player.rotation < 0
-      player.rotation = 3
-
-    console.log "rotation", player.rotation
-
     player.rotateBlock()
 
     @broadcastMove player
@@ -135,9 +127,10 @@ module.exports = class
 
   onPlayerDisconnect: (player) =>
     if ~@players.indexOf(player)
-        @players.splice @players.indexOf(player), 1
+      @players.splice @players.indexOf(player), 1
 
-      @colors.push player.color
+      console.log "pushed back #{player.color}"
+      @tmpColors.push player.color
       @level.blocks.push player.blockId
       @broadcastPlayerLeave player
 

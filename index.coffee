@@ -7,7 +7,7 @@ io  = socketio.listen(app)
 
 app.configure ->
   
-  app.use(express.logger())
+  # app.use(express.logger())
   app.use(express.cookieParser())
   app.use(express.bodyParser())
   app.use(express.methodOverride())
