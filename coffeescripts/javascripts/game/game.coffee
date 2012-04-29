@@ -11,13 +11,18 @@ window.FitItGame = FitItGame = class
     @socket.on "move", @onPlayerMoved
     @socket.on "player_join", @onPlayerJoined
     @socket.on "player_leave", @onPlayerLeave
+    @socket.on "queue_length", @onQueueLengthChanged
+
     @bindKeys()
+    @bindNameInput()
 
   startAnimationLoop: ->
     every 1000 / 30, =>
       @draw()
 
   onGamedata: (data) =>
+    $('.waiting').fadeOut 'fast'
+
     @board = new FitItBoard
     @board.initialize @context, data.board
 
@@ -27,6 +32,9 @@ window.FitItGame = FitItGame = class
       @players[player.id] = newPlayer
 
     @startAnimationLoop()
+
+  onQueueLengthChanged: (newLength) ->
+    $('.waiting-for').text(4-parseInt(newLength))
 
   bindKeys: ->
     $(document).unbind "keydown"
@@ -50,6 +58,16 @@ window.FitItGame = FitItGame = class
         when 70 # flip
           @socket.emit 'flip'
           return false
+
+  bindNameInput: ->
+    $('input').unbind "keydown"
+    $('input').keydown (event) =>
+      if event.keyCode is 13 and $('input').val()
+        @socket.emit 'name', $('input').val()
+        # hide input
+        $('.enter-name').fadeOut 'fast'
+        $('.waiting').fadeIn 'fast'
+
         
   onPlayerMoved: (playerData) =>
     if @players.hasOwnProperty(playerData.id)

@@ -28,7 +28,9 @@
       this.socket.on("move", this.onPlayerMoved);
       this.socket.on("player_join", this.onPlayerJoined);
       this.socket.on("player_leave", this.onPlayerLeave);
-      return this.bindKeys();
+      this.socket.on("queue_length", this.onQueueLengthChanged);
+      this.bindKeys();
+      return this.bindNameInput();
     };
 
     _Class.prototype.startAnimationLoop = function() {
@@ -40,6 +42,7 @@
 
     _Class.prototype.onGamedata = function(data) {
       var key, newPlayer, player, _ref;
+      $('.waiting').fadeOut('fast');
       this.board = new FitItBoard;
       this.board.initialize(this.context, data.board);
       this.players = {};
@@ -50,6 +53,10 @@
         this.players[player.id] = newPlayer;
       }
       return this.startAnimationLoop();
+    };
+
+    _Class.prototype.onQueueLengthChanged = function(newLength) {
+      return $('.waiting-for').text(4 - parseInt(newLength));
     };
 
     _Class.prototype.bindKeys = function() {
@@ -75,6 +82,18 @@
           case 70:
             _this.socket.emit('flip');
             return false;
+        }
+      });
+    };
+
+    _Class.prototype.bindNameInput = function() {
+      var _this = this;
+      $('input').unbind("keydown");
+      return $('input').keydown(function(event) {
+        if (event.keyCode === 13 && $('input').val()) {
+          _this.socket.emit('name', $('input').val());
+          $('.enter-name').fadeOut('fast');
+          return $('.waiting').fadeIn('fast');
         }
       });
     };
@@ -108,7 +127,6 @@
     _Class.prototype.draw = function() {
       var key, player, _ref, _results;
       this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
-      console.log(this.context.canvas.width, this.context.canvas.height);
       this.board.draw();
       _ref = this.players;
       _results = [];
