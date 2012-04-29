@@ -10,3 +10,10 @@ blockquote,q{quotes:"" ""}
 a img{border:none}
 :focus{outline:0}
 ul,ol,li{list-style-type:none;list-style-position:inside}
+#wrapper{width:970px;height:585px;margin:100px auto;background-image:url("/images/background-image.png");background-repeat:no-repeat;position:relative;}
+#wrapper canvas,#wrapper .logo,#wrapper .info,#wrapper .controls{position:absolute}
+#wrapper canvas{width:480px;height:416px;top:80px;left:110px}
+#wrapper .logo{width:210px;height:90px;top:60px;right:130px;background-image:url("/images/fitit-logo.png");background-repeat:no-repeat}
+#wrapper .info{width:210px;height:240px;top:160px;right:125px;font-size:13px;font-family:'tahoma';color:#444;-webkit-text-shadow:0 0 2px #fff;-moz-text-shadow:0 0 2px #fff;text-shadow:0 0 2px #fff;}
+#wrapper .info p{margin:0 0 10px 0}
+#wrapper .controls{width:220px;height:100px;right:120px;bottom:45px;background-image:url("/images/control-keys.png");background-repeat:no-repeat}

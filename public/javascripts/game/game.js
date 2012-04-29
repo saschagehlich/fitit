@@ -56,6 +56,7 @@
       var _this = this;
       $(document).unbind("keydown");
       return $(document).keydown(function(event) {
+        console.log(event.keyCode);
         switch (event.keyCode) {
           case 37:
             return _this.socket.emit('move', 2);
