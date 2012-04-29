@@ -56,7 +56,6 @@
       var _this = this;
       $(document).unbind("keydown");
       return $(document).keydown(function(event) {
-        console.log(event.keyCode);
         switch (event.keyCode) {
           case 37:
             return _this.socket.emit('move', 2);
@@ -68,6 +67,8 @@
             return _this.socket.emit('move', 1);
           case 32:
             return _this.socket.emit('rotation', 1);
+          case 70:
+            return _this.socket.emit('flip');
         }
       });
     };
@@ -114,5 +115,30 @@
     return _Class;
 
   })();
+
+  if (window.FitItHelper == null) {
+    window.FitItHelper = {};
+  }
+
+  window.FitItHelper.centerWrapper = function() {
+    var left, top, windowHeight, windowWidth, wrapperHeight, wrapperWidth;
+    wrapperWidth = 970;
+    wrapperHeight = 585;
+    windowWidth = $(window).width();
+    windowHeight = $(window).height();
+    left = (windowWidth - wrapperWidth) / 2;
+    top = (windowHeight - wrapperHeight) / 2;
+    return $('#wrapper').css({
+      top: top,
+      left: left
+    });
+  };
+
+  $(function() {
+    FitItHelper.centerWrapper();
+    return $(window).resize(function() {
+      return FitItHelper.centerWrapper();
+    });
+  });
 
 }).call(this);

@@ -4,7 +4,6 @@ window.FitItGame = FitItGame = class
   constructor: (io) ->
     @socket = io.connect "http://#{window.location.hostname}:8080"
     @socket.on "connect", @onConnect
-
     @context = $('#screen').get(0).getContext('2d')
 
   onConnect: =>
@@ -17,12 +16,6 @@ window.FitItGame = FitItGame = class
   startAnimationLoop: ->
     every 1000 / 30, =>
       @draw()
-    # requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||window.webkitRequestAnimationFrame || window.msRequestAnimationFrame
-    # start = window.mozAnimationStartTime # Only supported in FF. Other browsers can use something like Date.now().  
-    # step = (timestamp) =>
-    #   @draw()
-    #   requestAnimationFrame(step)
-    # requestAnimationFrame(step)
 
   onGamedata: (data) =>
     @board = new FitItBoard
@@ -73,3 +66,21 @@ window.FitItGame = FitItGame = class
     for key, player of @players
       player.draw()
 
+window.FitItHelper ?= {}
+window.FitItHelper.centerWrapper = ->
+  wrapperWidth = 970
+  wrapperHeight = 585
+  windowWidth = $(window).width()
+  windowHeight = $(window).height()
+  left = (windowWidth - wrapperWidth)/2
+  top  = (windowHeight - wrapperHeight)/2
+  $('#wrapper').css
+    top: top
+    left: left
+
+
+$ ->
+  FitItHelper.centerWrapper()
+  $(window).resize ->
+    FitItHelper.centerWrapper()
+    
