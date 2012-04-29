@@ -68,14 +68,16 @@ window.FitItGame = FitItGame = class
           return false
 
   bindNameInput: ->
-    $('input').unbind "keydown"
-    $('input').keydown (event) =>
-      if event.keyCode is 13 and $('input').val()
+    $('form').submit (event) =>
+      event.preventDefault()
+      if $('input').val()
         @socket.emit 'name', $('input').val()
         # hide input
         $('.enter-name').fadeOut 'fast'
         $('.waiting').fadeIn 'fast'
-
+        $('form').unbind "submit"
+        $('form').submit ->
+          return false
         
   onPlayerMoved: (playerData) =>
     if @players.hasOwnProperty(playerData.id)

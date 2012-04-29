@@ -104,12 +104,16 @@
 
     _Class.prototype.bindNameInput = function() {
       var _this = this;
-      $('input').unbind("keydown");
-      return $('input').keydown(function(event) {
-        if (event.keyCode === 13 && $('input').val()) {
+      return $('form').submit(function(event) {
+        event.preventDefault();
+        if ($('input').val()) {
           _this.socket.emit('name', $('input').val());
           $('.enter-name').fadeOut('fast');
-          return $('.waiting').fadeIn('fast');
+          $('.waiting').fadeIn('fast');
+          $('form').unbind("submit");
+          return $('form').submit(function() {
+            return false;
+          });
         }
       });
     };
