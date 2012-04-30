@@ -3,17 +3,23 @@ Blocks = require "../data/blocks"
 Player = require "../class/player"
 EventEmitter = require("events").EventEmitter
 
-module.exports = class extends EventEmitter
-  players: []
-  playerId: 0
-  colors: ['green', 'orange', 'pink', 'blue']
-  tmpColors: []
+util = require "util"
 
+module.exports = class extends EventEmitter
   constructor: (@io, @server) ->
+    @players = []
+    @playerId = 0
+    @colors = ['green', 'orange', 'pink', 'blue']
+    @tmpColors = []
+    @ended = false
+
+    @levels = new Levels()
+    @blocks = new Blocks()
+
     @id = +new Date()
     @tmpColors = @colors.slice(0)
 
-    @level = Levels.getRandomLevel()
+    @level = @levels.getRandomLevel()
     @board = {}
 
     # create empty board
@@ -35,7 +41,7 @@ module.exports = class extends EventEmitter
 
     player.color = @tmpColors[0]
     player.blockId = @level.blocks[0]
-    player.block = Blocks.getBlockWithId player.blockId
+    player.block = @blocks.getBlockWithId player.blockId
 
     switch @colors.indexOf(player.color)
       when 0
@@ -86,16 +92,22 @@ module.exports = class extends EventEmitter
   checkSolved: =>
     matchedTiles = 0
     fittingTiles = 0
-    boardCopy = {}
+    boardCopy = []
+
+    console.log @board
 
     for key, val of @board
-      boardCopy[key] ?= {}
+      boardCopy[key] ?= []
       for k, v of val
-        boardCopy[key][k] = v
+        boardCopy[key].push v
         if v is 1
           fittingTiles++
 
+    if global.debug
+      console.log "Fitting tiles: #{fittingTiles}"
+
     for player in @players
+      console.log player.position
       for i in [0...player.block.length]
         for j in [0...player.block[i].length]
           y = player.position.y + i
@@ -104,12 +116,41 @@ module.exports = class extends EventEmitter
             boardCopy[y][x] = 2
             matchedTiles++
 
+    if global.debug
+      util.print "|-"
+      for i in [0...boardCopy[0].length]
+        util.print "--"
+      util.print "-|\n"
+
+      for i in [0...boardCopy.length]
+        util.print "| "
+        for j in [0...boardCopy[i].length]
+          tile = boardCopy[i][j]
+          switch tile
+            when -1
+              util.print "  "
+            when 1
+              util.print "- "
+            when 2
+              util.print "# "
+        util.print " |\n"
+
+      util.print "|-"
+      for i in [0...boardCopy[0].length]
+        util.print "--"
+      util.print "-|\n"
+
+      console.log "MatchedTiles: #{matchedTiles}"
+
+
     # console.log "#{matchedTiles} / #{fittingTiles}"
     if matchedTiles is fittingTiles
+      @ended = true
+
       @emit "game_ended"
+
       usersToKick = @players.slice(0)
       for player in usersToKick
-        player.socket.willDisconnect = true
         player.socket.emit "winning"
         player.socket.disconnect()
 
@@ -147,7 +188,7 @@ module.exports = class extends EventEmitter
     @checkSolved()
 
   onPlayerDisconnect: (player) =>
-    unless player.willDisconnect?
+    unless @ended
       @emit "game_ended", "`#{player.name}` left the game"
 
   broadcastInitialData: ->

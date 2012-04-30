@@ -41,8 +41,7 @@ module.exports = class
 
         if err?
           for p in game.players
-            unless p.willDisconnect?
-              p.willDisconnect = true
+            unless game.ended
               p.socket.emit "game_ended", err
 
       @queue = []
