@@ -41,7 +41,7 @@ module.exports = class extends EventEmitter
 
     player.color = @tmpColors[0]
     player.blockId = @level.blocks[0]
-    player.block = @blocks.getBlockWithId player.blockId
+    player.block = @blocks.blocks[player.blockId]
 
     switch @colors.indexOf(player.color)
       when 0
@@ -188,7 +188,10 @@ module.exports = class extends EventEmitter
     @checkSolved()
 
   onPlayerDisconnect: (player) =>
-    unless @ended
+    unless @ended and player.willDisconnect
+      for p in @players when p isnt player
+        p.willDisconnect = true
+
       @emit "game_ended", "`#{player.name}` left the game"
 
   broadcastInitialData: ->
