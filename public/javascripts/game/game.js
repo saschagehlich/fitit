@@ -147,13 +147,14 @@
     };
 
     _Class.prototype.changeToGameView = function(players) {
-      var key, player;
+      var key, li, player;
       this.bindKeys();
       $('.info, .waiting').fadeOut('fast');
       $('.players').empty();
       for (key in players) {
         player = players[key];
-        $("<li class=\"" + player.color + "\">" + player.name + "</li>").appendTo('.players');
+        li = $('<li>').addClass(player.color).text(player.name);
+        $('.players').append(li);
       }
       return $('.players, canvas').fadeIn('fast');
     };

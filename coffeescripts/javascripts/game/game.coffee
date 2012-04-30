@@ -109,7 +109,8 @@ window.FitItGame = FitItGame = class
     $('.info, .waiting').fadeOut 'fast'
     $('.players').empty()
     for key, player of players
-      $("<li class=\"#{player.color}\">#{player.name}</li>").appendTo('.players')
+      li = $('<li>').addClass(player.color).text player.name
+      $('.players').append li
     $('.players, canvas').fadeIn 'fast'
 
   bindKeys: ->
