@@ -17,13 +17,21 @@ window.FitItGame = FitItGame = class
       # @socket.emit "name", @name
 
   prepareSounds: ->
+    if document.cookie.match /mute=on/i
+      $('.sound').removeClass("on").addClass("off")
+      soundManager.mute()
+
     $('.sound').click ->
       if $(this).hasClass "on"
         $(this).removeClass("on").addClass "off"
         soundManager.mute()
+
+        document.cookie = "mute=on"
       else
         $(this).removeClass("off").addClass "on"
         soundManager.unmute()
+
+        document.cookie = "mute=off"
 
     soundManager.onload = ->
       subway = soundManager.createSound

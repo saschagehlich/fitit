@@ -38,13 +38,19 @@
     }
 
     _Class.prototype.prepareSounds = function() {
+      if (document.cookie.match(/mute=on/i)) {
+        $('.sound').removeClass("on").addClass("off");
+        soundManager.mute();
+      }
       $('.sound').click(function() {
         if ($(this).hasClass("on")) {
           $(this).removeClass("on").addClass("off");
-          return soundManager.mute();
+          soundManager.mute();
+          return document.cookie = "mute=on";
         } else {
           $(this).removeClass("off").addClass("on");
-          return soundManager.unmute();
+          soundManager.unmute();
+          return document.cookie = "mute=off";
         }
       });
       return soundManager.onload = function() {
