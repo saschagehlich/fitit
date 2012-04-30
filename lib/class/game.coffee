@@ -94,8 +94,6 @@ module.exports = class extends EventEmitter
     fittingTiles = 0
     boardCopy = []
 
-    console.log @board
-
     for key, val of @board
       boardCopy[key] ?= []
       for k, v of val
@@ -142,8 +140,6 @@ module.exports = class extends EventEmitter
 
       console.log "MatchedTiles: #{matchedTiles}"
 
-
-    # console.log "#{matchedTiles} / #{fittingTiles}"
     if matchedTiles is fittingTiles
       @ended = true
 
@@ -188,8 +184,10 @@ module.exports = class extends EventEmitter
     @checkSolved()
 
   onPlayerDisconnect: (player) =>
-    unless @ended and player.willDisconnect
+    if not @ended and not player.willDisconnect
+      console.log "onPlayerDisconnect"
       for p in @players when p isnt player
+        console.log "setting #{p.name} to willDisconnect"
         p.willDisconnect = true
 
       @emit "game_ended", "`#{player.name}` left the game"

@@ -1,4 +1,5 @@
 window.every = (t, f) -> setInterval f, t
+window.after = (t, f) -> setTimeout f, t
 
 window.FitItGame = FitItGame = class
   name: null
@@ -43,6 +44,12 @@ window.FitItGame = FitItGame = class
         volume: 100
         autoLoad: true
 
+      success = soundManager.createSound
+        id: "success"
+        url: [ '/audio/success.mp3', '/audio/success.aac', '/audio/success.ogg' ]
+        volume: 100
+        autoLoad: true
+
   onConnect: =>
     @socket.on "gamedata", @onGamedata
     @socket.on "move", @onPlayerMoved
@@ -63,8 +70,10 @@ window.FitItGame = FitItGame = class
     location.reload()
 
   onWinning: ->
-    $('.winning').fadeIn 'fast'
-    @players = {}
+    soundManager.play "success"
+    after 1000, ->
+      $('.winning').fadeIn 'fast'
+      @players = {}
 
   onGamedata: (data) =>
     soundManager.play "dingdong"

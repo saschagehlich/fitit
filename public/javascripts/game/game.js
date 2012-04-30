@@ -6,6 +6,10 @@
     return setInterval(f, t);
   };
 
+  window.after = function(t, f) {
+    return setTimeout(f, t);
+  };
+
   window.FitItGame = FitItGame = (function() {
 
     _Class.prototype.name = null;
@@ -44,7 +48,7 @@
         }
       });
       return soundManager.onload = function() {
-        var dingdong, subway;
+        var dingdong, subway, success;
         subway = soundManager.createSound({
           id: "subway",
           url: ['/audio/subway.mp3', '/audio/subway.aac', '/audio/subway.ogg'],
@@ -62,9 +66,15 @@
             return loopBackground();
           }
         });
-        return dingdong = soundManager.createSound({
+        dingdong = soundManager.createSound({
           id: "dingdong",
           url: ['/audio/dingdong.mp3', '/audio/dingdong.aac', '/audio/dingdong.ogg'],
+          volume: 100,
+          autoLoad: true
+        });
+        return success = soundManager.createSound({
+          id: "success",
+          url: ['/audio/success.mp3', '/audio/success.aac', '/audio/success.ogg'],
           volume: 100,
           autoLoad: true
         });
@@ -95,8 +105,11 @@
     };
 
     _Class.prototype.onWinning = function() {
-      $('.winning').fadeIn('fast');
-      return this.players = {};
+      soundManager.play("success");
+      return after(1000, function() {
+        $('.winning').fadeIn('fast');
+        return this.players = {};
+      });
     };
 
     _Class.prototype.onGamedata = function(data) {
