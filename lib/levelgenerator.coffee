@@ -50,6 +50,9 @@ module.exports = class
           for r in [0...Math.floor(Math.random()*10)]
             block = @rotate(block)
 
+          for f in [0...Math.floor(Math.random()*10)]
+            block = @flipBlock(block)
+
           randomPosition =
             x: Math.min(Math.floor(Math.random() * 4), 5 - block[0].length)
             y: Math.min(Math.floor(Math.random() * 4), 5 - block.length)
@@ -85,5 +88,14 @@ module.exports = class
         unless newData.hasOwnProperty(j)
           newData[j] = []
         newData[j].push block[i][j]
+
+    return newData
+
+  flipBlock: (block) ->
+    newData = []
+    for i in [0...block.length]
+      newData[i] = []
+      for j in [block[i].length-1..0]
+        newData[i].push block[i][j]
 
     return newData
