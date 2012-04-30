@@ -57,3 +57,11 @@ module.exports =
   getRandomBlock: ->
     i = Math.round(Math.random() * Object.keys(@blocks).length)
     return @blocks[Object.keys(@blocks)[i]]
+
+  getBlockWithId: (id) ->
+    block = @blocks[id]
+    copy = []
+    for row in block
+      copy.push row.slice(0)
+
+    return copy

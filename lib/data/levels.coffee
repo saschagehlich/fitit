@@ -2,6 +2,7 @@ module.exports =
   levels:
     [
       {
+        id: 1
         data: [
           [1, 1, 1, 1, -1],
           [1, 1, 1, 1, -1],
@@ -14,6 +15,7 @@ module.exports =
         ]
       },
       {
+        id: 2
         data: [
           [-1, -1, 1, 1, 1],
           [1, 1, 1, 1, 1],
@@ -26,6 +28,7 @@ module.exports =
         ]
       },
       {
+        id: 3
         data: [
           [-1, -1, -1, -1, -1],
           [-1, -1, 1, 1, 1],
@@ -38,6 +41,7 @@ module.exports =
         ]
       },
       {
+        id: 4
         data: [
           [-1, -1, -1, -1, 1],
           [-1, -1, 1, 1, 1],
@@ -51,6 +55,7 @@ module.exports =
         ]
       },
       {
+        id: 5
         data: [
           [1, 1, 1, 1, 1],
           [1, 1, 1, 1, 1],
@@ -66,9 +71,10 @@ module.exports =
 
   getRandomLevel: ->
     i = Math.floor(Math.random()*@levels.length)
-    level = @levels[i]
-    blockIndex = Math.floor(Math.random()*level.blocks.length)
-    console.log "blockIndex", blockIndex
-    level.blocks = level.blocks[blockIndex].slice(0)
+    copy = {
+      data: @levels[i].data
+    }
+    blockIndex = Math.floor(Math.random()*@levels[i].blocks.length)
+    copy.blocks = @levels[i].blocks[blockIndex].slice(0)
 
-    return level
+    return copy

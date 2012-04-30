@@ -35,7 +35,7 @@ module.exports = class extends EventEmitter
 
     player.color = @tmpColors[0]
     player.blockId = @level.blocks[0]
-    player.block = Blocks.blocks[player.blockId]
+    player.block = Blocks.getBlockWithId player.blockId
 
     switch @colors.indexOf(player.color)
       when 0

@@ -22,8 +22,8 @@ module.exports = class
           if ~@queue.indexOf(socket)
             @queue.splice @queue.indexOf(socket), 1
 
-        for waitingSocket in @queue
-          waitingSocket.emit "queue_length", @queue.length
+          for waitingSocket in @queue
+            waitingSocket.emit "queue_length", @queue.length
 
       @checkQueue()
 
@@ -31,6 +31,7 @@ module.exports = class
     if @queue.length is 4
       game = new Game(@io, this)
       for socket in @queue
+        socket.inQueue = false
         player = new Player(socket)
         game.addPlayer(player)
 
