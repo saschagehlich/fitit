@@ -56,5 +56,9 @@ module.exports = class
       ]
 
   getRandomBlock: ->
-    i = Math.round(Math.random() * Object.keys(@blocks).length)
+    i = Math.floor(Math.random() * Object.keys(@blocks).length)
     return @blocks[Object.keys(@blocks)[i]]
+
+  getRandomBlockWithId: ->
+    i = Math.floor(Math.random() * Object.keys(@blocks).length)
+    return [@blocks[Object.keys(@blocks)[i]], Object.keys(@blocks)[i]]

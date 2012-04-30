@@ -2,6 +2,7 @@ Levels = require "../data/levels"
 Blocks = require "../data/blocks"
 Player = require "../class/player"
 EventEmitter = require("events").EventEmitter
+LevelGenerator = require "../levelgenerator"
 
 util = require "util"
 
@@ -13,14 +14,40 @@ module.exports = class extends EventEmitter
     @tmpColors = []
     @ended = false
 
+    @generator = new LevelGenerator
+
     @levels = new Levels()
     @blocks = new Blocks()
 
     @id = +new Date()
     @tmpColors = @colors.slice(0)
 
-    @level = @levels.getRandomLevel()
+    @level = @generator.getRandomLevel()
     @board = {}
+
+    if global.debug
+      console.log @level
+
+      util.print "|-"
+      for i in [0...@level.data[0].length]
+        util.print "--"
+      util.print "-|\n"
+
+      for i in [0...@level.data.length]
+        util.print "| "
+        for j in [0...@level.data[i].length]
+          tile = @level.data[i][j]
+          switch tile
+            when -1
+              util.print "  "
+            else
+              util.print "#{tile} "
+        util.print " |\n"
+
+      util.print "|-"
+      for i in [0...@level.data[0].length]
+        util.print "--"
+      util.print "-|\n"
 
     # create empty board
     for i in [0...13]
@@ -105,7 +132,6 @@ module.exports = class extends EventEmitter
       console.log "Fitting tiles: #{fittingTiles}"
 
     for player in @players
-      console.log player.position
       for i in [0...player.block.length]
         for j in [0...player.block[i].length]
           y = player.position.y + i
