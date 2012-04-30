@@ -1,5 +1,7 @@
 (function() {
 
+  soundManager.url = "/swf";
+
   $(document).ready(function() {
     return window.game = new FitItGame(io);
   });

@@ -7,11 +7,41 @@ window.FitItGame = FitItGame = class
     @socket.on "connect", @onConnect
     @context = $('#screen').get(0).getContext('2d')
 
+    @prepareSounds()
+
     $('.winning').click =>
       location.reload()
       # $('.winning').fadeOut "slow"
       # @changeToWaitingView()
       # @socket.emit "name", @name
+
+  prepareSounds: ->
+    $('.sound').click ->
+      if $(this).hasClass "on"
+        $(this).removeClass("on").addClass "off"
+        soundManager.mute()
+      else
+        $(this).removeClass("off").addClass "on"
+        soundManager.unmute()
+
+    soundManager.onload = ->
+      subway = soundManager.createSound
+        id: "subway"
+        url: [ '/audio/subway.mp3', '/audio/subway.aac', '/audio/subway.ogg' ]
+        volume: 50
+        autoLoad: true
+        onload: ->
+          loopBackground = ->
+            subway.play
+              onfinish: ->
+                loopBackground()
+          loopBackground()
+
+      dingdong = soundManager.createSound
+        id: "dingdong"
+        url: [ '/audio/dingdong.mp3', '/audio/dingdong.aac', '/audio/dingdong.ogg' ]
+        volume: 100
+        autoLoad: true
 
   onConnect: =>
     @socket.on "gamedata", @onGamedata
@@ -37,6 +67,8 @@ window.FitItGame = FitItGame = class
     @players = {}
 
   onGamedata: (data) =>
+    soundManager.play "dingdong"
+
     @changeToGameView(data.players)
     unless @board
       @board = new FitItBoard

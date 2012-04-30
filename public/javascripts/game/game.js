@@ -27,10 +27,49 @@
       this.socket = io.connect("http://" + window.location.hostname + ":8080");
       this.socket.on("connect", this.onConnect);
       this.context = $('#screen').get(0).getContext('2d');
+      this.prepareSounds();
       $('.winning').click(function() {
         return location.reload();
       });
     }
+
+    _Class.prototype.prepareSounds = function() {
+      $('.sound').click(function() {
+        if ($(this).hasClass("on")) {
+          $(this).removeClass("on").addClass("off");
+          return soundManager.mute();
+        } else {
+          $(this).removeClass("off").addClass("on");
+          return soundManager.unmute();
+        }
+      });
+      return soundManager.onload = function() {
+        var dingdong, subway;
+        subway = soundManager.createSound({
+          id: "subway",
+          url: ['/audio/subway.mp3', '/audio/subway.aac', '/audio/subway.ogg'],
+          volume: 50,
+          autoLoad: true,
+          onload: function() {
+            var loopBackground;
+            loopBackground = function() {
+              return subway.play({
+                onfinish: function() {
+                  return loopBackground();
+                }
+              });
+            };
+            return loopBackground();
+          }
+        });
+        return dingdong = soundManager.createSound({
+          id: "dingdong",
+          url: ['/audio/dingdong.mp3', '/audio/dingdong.aac', '/audio/dingdong.ogg'],
+          volume: 100,
+          autoLoad: true
+        });
+      };
+    };
 
     _Class.prototype.onConnect = function() {
       this.socket.on("gamedata", this.onGamedata);
@@ -62,6 +101,7 @@
 
     _Class.prototype.onGamedata = function(data) {
       var key, newPlayer, player, _ref;
+      soundManager.play("dingdong");
       this.changeToGameView(data.players);
       if (!this.board) {
         this.board = new FitItBoard;

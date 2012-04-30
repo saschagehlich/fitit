@@ -12,7 +12,10 @@ a img{border:none}
 ul,ol,li{list-style-type:none;list-style-position:inside}
 html{overflow:hidden}
 body{overflow:hidden;background-image:url("/images/concrete-background.jpg");background-repeat:repeat}
-#container{position:absolute;top:0;left:0;width:100%;height:100%}
+#container{position:absolute;top:0;left:0;width:100%;height:100%;}
+#container .sound{width:16px;height:17px;position:absolute;top:10px;left:10px;cursor:pointer;}
+#container .sound.on{background:url("/images/sound-on.png") left center}
+#container .sound.off{background:url("/images/sound-off.png") left center}
 .waiting{width:480px;height:416px;top:179px;left:117px;text-align:center;background-image:url("/images/waiting-teaser.png");background-repeat:no-repeat;background-position:center 80px}
 .enter-name{width:350px;height:65px;top:214px;left:182px;text-align:center}
 .enter-name{background-image:url("/images/whats-name-label.png");background-repeat:no-repeat;background-position:center 4px;}
