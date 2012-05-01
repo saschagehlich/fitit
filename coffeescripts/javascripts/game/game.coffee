@@ -104,7 +104,7 @@ window.FitItGame = FitItGame = class
 
   changeToWaitingView: ->
     $(document).unbind "keydown"
-    $('.players, canvas').fadeOut 'fast'
+    $('.players, canvas#screen').fadeOut 'fast'
     $('.info, .waiting').fadeIn 'fast'
 
   changeToGameView: (players) ->
@@ -112,9 +112,34 @@ window.FitItGame = FitItGame = class
     $('.info, .waiting').fadeOut 'fast'
     $('.players').empty()
     for key, player of players
-      li = $('<li>').addClass(player.color).text player.name
+      li = $('<li>')
+      playerCanvas = $('<canvas>').attr(id: 'player-' + player.id, width: '32', height: '32').addClass('player-canvas')
+      li.append playerCanvas
+      li.append $('<span>').addClass('player-name').text(player.name)
       $('.players').append li
-    $('.players, canvas').fadeIn 'fast'
+
+      @drawPlayerCanvas(playerCanvas, player.block, player.color)
+    $('.players, canvas#screen').fadeIn 'fast'
+
+  drawPlayerCanvas: (canvas, block, color) ->
+    ###
+      Draw the player's block into the canvas
+    ###
+    tile = new Image()
+    tile.src = '/images/' + color + '-tile.png'
+
+    tile.onload = ->
+      tileSize = Math.floor(Math.min(canvas.width() / block[0].length, canvas.height() / block.length))
+
+      context = $(canvas)[0].getContext '2d'
+      
+      for blockY in [0...block.length]
+        for blockX in [0...block[blockY].length]
+          if block[blockY][blockX] isnt -1
+            paddingX = Math.round( ( 32 - ( block[blockY].length * tileSize ) ) / 2) * -1
+            paddingY = Math.round( ( 32 - ( block.length * tileSize ) ) / 2) * -1
+            context.drawImage tile, 0, 0, 32, 32, blockX * tileSize - paddingX, blockY * tileSize - paddingY, tileSize, tileSize
+
 
   bindKeys: ->
     $(document).unbind "keydown"
