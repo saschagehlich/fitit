@@ -32,6 +32,8 @@
       this.socket.on("connect", this.onConnect);
       this.context = $('#screen').get(0).getContext('2d');
       this.prepareSounds();
+      this.overlappingTile = new Image();
+      this.overlappingTile.src = "/images/overlap-tile.png";
       $('.winning').click(function() {
         return location.reload();
       });
@@ -230,14 +232,60 @@
     };
 
     _Class.prototype.draw = function() {
-      var key, player, _ref, _results;
+      var blockX, blockY, i, key, player, playerBlock, playerPosition, row, tempBoard, tile, tileX, tileY, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3, _results;
       this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
       this.board.draw();
+      tempBoard = [];
+      for (i = _i = 0; _i < 13; i = ++_i) {
+        row = [];
+        for (i = _j = 0; _j < 15; i = ++_j) {
+          row.push(-1);
+        }
+        tempBoard.push(row);
+      }
       _ref = this.players;
-      _results = [];
       for (key in _ref) {
         player = _ref[key];
-        _results.push(player.draw());
+        /*
+                Recognize block overlapping
+        */
+
+        playerBlock = player.playerData.block;
+        playerPosition = player.playerData.position;
+        for (blockY = _k = 0, _ref1 = playerBlock.length; 0 <= _ref1 ? _k < _ref1 : _k > _ref1; blockY = 0 <= _ref1 ? ++_k : --_k) {
+          for (blockX = _l = 0, _ref2 = playerBlock[blockY].length; 0 <= _ref2 ? _l < _ref2 : _l > _ref2; blockX = 0 <= _ref2 ? ++_l : --_l) {
+            tileY = playerPosition.y + blockY;
+            tileX = playerPosition.x + blockX;
+            if (playerBlock[blockY][blockX] !== -1) {
+              if (tempBoard[tileY][tileX] === -1) {
+                tempBoard[tileY][tileX] = player.playerData.id;
+              } else {
+                tempBoard[tileY][tileX] = 0;
+              }
+            }
+          }
+        }
+        player.draw();
+      }
+      /*
+            Draw overlapping tiles
+      */
+
+      _results = [];
+      for (tileY = _m = 0, _ref3 = tempBoard.length; 0 <= _ref3 ? _m < _ref3 : _m > _ref3; tileY = 0 <= _ref3 ? ++_m : --_m) {
+        _results.push((function() {
+          var _n, _ref4, _results1;
+          _results1 = [];
+          for (tileX = _n = 0, _ref4 = tempBoard[tileY].length; 0 <= _ref4 ? _n < _ref4 : _n > _ref4; tileX = 0 <= _ref4 ? ++_n : --_n) {
+            tile = tempBoard[tileY][tileX];
+            if (tile === 0) {
+              _results1.push(this.context.drawImage(this.overlappingTile, tileX * 32, tileY * 32));
+            } else {
+              _results1.push(void 0);
+            }
+          }
+          return _results1;
+        }).call(this));
       }
       return _results;
     };

@@ -10,6 +10,9 @@ window.FitItGame = FitItGame = class
 
     @prepareSounds()
 
+    @overlappingTile = new Image()
+    @overlappingTile.src = "/images/overlap-tile.png"
+
     $('.winning').click =>
       location.reload()
       # $('.winning').fadeOut "slow"
@@ -168,8 +171,42 @@ window.FitItGame = FitItGame = class
   draw: ->
     @context.clearRect 0, 0, @context.canvas.width, @context.canvas.height
     @board.draw()
+
+    tempBoard = []
+    for i in [0...13]
+      row = []
+      for i in [0...15]
+        row.push -1
+      tempBoard.push row
+
     for key, player of @players
+      ###
+        Recognize block overlapping
+      ###
+      playerBlock = player.playerData.block
+      playerPosition = player.playerData.position
+
+      for blockY in [0...playerBlock.length]
+        for blockX in [0...playerBlock[blockY].length]
+          tileY = playerPosition.y + blockY
+          tileX = playerPosition.x + blockX
+          if playerBlock[blockY][blockX] isnt -1
+            if tempBoard[tileY][tileX] is -1
+              tempBoard[tileY][tileX] = player.playerData.id
+            else
+              tempBoard[tileY][tileX] = 0 # overlapping!
+
       player.draw()
+
+    ###
+      Draw overlapping tiles
+    ###
+    for tileY in [0...tempBoard.length]
+      for tileX in [0...tempBoard[tileY].length]
+        tile = tempBoard[tileY][tileX]
+        if tile is 0
+          @context.drawImage @overlappingTile, tileX * 32, tileY * 32
+
 
 window.FitItHelper ?= {}
 window.FitItHelper.centerWrapper = ->
