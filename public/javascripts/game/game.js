@@ -287,22 +287,22 @@
           _results1 = [];
           for (playerBlockY = _i = 0, _ref1 = playerBlock.length; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; playerBlockY = 0 <= _ref1 ? ++_i : --_i) {
             _results1.push((function() {
-              var _base, _base1, _j, _name, _name1, _ref2, _results2;
+              var _base, _base1, _j, _ref2, _results2;
               _results2 = [];
               for (playerBlockX = _j = 0, _ref2 = playerBlock[playerBlockY].length; 0 <= _ref2 ? _j < _ref2 : _j > _ref2; playerBlockX = 0 <= _ref2 ? ++_j : --_j) {
                 tilePositionY = playerPosition.y + playerBlockY;
                 tilePositionX = playerPosition.x + playerBlockX;
-                if ((_base = this.overlappingData)[_name = "" + tilePositionY] == null) {
-                  _base[_name] = {};
+                if ((_base = this.overlappingData)[tilePositionY] == null) {
+                  _base[tilePositionY] = {};
                 }
-                if ((_base1 = this.overlappingData["" + tilePositionY])[_name1 = "" + tilePositionX] == null) {
-                  _base1[_name1] = -1;
+                if ((_base1 = this.overlappingData[tilePositionY])[tilePositionX] == null) {
+                  _base1[tilePositionX] = -1;
                 }
                 if (playerBlock[playerBlockY][playerBlockX] !== -1) {
-                  if (this.overlappingData["" + tilePositionY]["" + tilePositionX] === -1) {
-                    _results2.push(this.overlappingData["" + tilePositionY]["" + tilePositionX] = 0);
+                  if (this.overlappingData[tilePositionY][tilePositionX] === -1) {
+                    _results2.push(this.overlappingData[tilePositionY][tilePositionX] = 0);
                   } else {
-                    _results2.push(this.overlappingData["" + tilePositionY]["" + tilePositionX] = 1);
+                    _results2.push(this.overlappingData[tilePositionY][tilePositionX] = 1);
                   }
                 } else {
                   _results2.push(void 0);

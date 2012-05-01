@@ -210,18 +210,18 @@ window.FitItGame = FitItGame = class
           tilePositionX = playerPosition.x + playerBlockX
 
           # set if undefined
-          @overlappingData["#{tilePositionY}"] ?= {}
-          @overlappingData["#{tilePositionY}"]["#{tilePositionX}"] ?= -1
+          @overlappingData[tilePositionY] ?= {}
+          @overlappingData[tilePositionY][tilePositionX] ?= -1
           
           # if current tile is an actual player tile
           if playerBlock[playerBlockY][playerBlockX] isnt -1
 
             # if no player tile is on the current tile postion
-            if @overlappingData["#{tilePositionY}"]["#{tilePositionX}"] is -1
-              @overlappingData["#{tilePositionY}"]["#{tilePositionX}"] = 0
+            if @overlappingData[tilePositionY][tilePositionX] is -1
+              @overlappingData[tilePositionY][tilePositionX] = 0
             else
               # there is already a player tile on this position
-              @overlappingData["#{tilePositionY}"]["#{tilePositionX}"] = 1 # overlapping!
+              @overlappingData[tilePositionY][tilePositionX] = 1 # overlapping!
 
   drawOverlappingBlocks: ->
     for tilePositionY, overlappingRow of @overlappingData
