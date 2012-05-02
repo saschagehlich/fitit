@@ -25,30 +25,6 @@ module.exports = class extends EventEmitter
     @level = @generator.getRandomLevel()
     @board = {}
 
-    if global.debug
-      console.log @level
-
-      util.print "|-"
-      for i in [0...@level.data[0].length]
-        util.print "--"
-      util.print "-|\n"
-
-      for i in [0...@level.data.length]
-        util.print "| "
-        for j in [0...@level.data[i].length]
-          tile = @level.data[i][j]
-          switch tile
-            when -1
-              util.print "  "
-            else
-              util.print "#{tile} "
-        util.print " |\n"
-
-      util.print "|-"
-      for i in [0...@level.data[0].length]
-        util.print "--"
-      util.print "-|\n"
-
     # create empty board
     for i in [0...13]
       for j in [0...15]
@@ -106,6 +82,7 @@ module.exports = class extends EventEmitter
       players: players
 
     @broadcastPlayerJoin(player)
+    @broadcastPlayers()
 
     player.socket.on "move", (direction) => @onPlayerMove player, direction
     player.socket.on "rotation", (direction) => @onPlayerRotation player, direction
@@ -140,9 +117,6 @@ module.exports = class extends EventEmitter
         if v is 1
           fittingTiles++
 
-    if global.debug
-      console.log "Fitting tiles: #{fittingTiles}"
-
     for player in @players
       for i in [0...player.block.length]
         for j in [0...player.block[i].length]
@@ -151,32 +125,6 @@ module.exports = class extends EventEmitter
           if boardCopy[y][x] is 1 and player.block[i][j] is 1
             boardCopy[y][x] = 2
             matchedTiles++
-
-    if global.debug
-      util.print "|-"
-      for i in [0...boardCopy[0].length]
-        util.print "--"
-      util.print "-|\n"
-
-      for i in [0...boardCopy.length]
-        util.print "| "
-        for j in [0...boardCopy[i].length]
-          tile = boardCopy[i][j]
-          switch tile
-            when -1
-              util.print "  "
-            when 1
-              util.print "- "
-            when 2
-              util.print "# "
-        util.print " |\n"
-
-      util.print "|-"
-      for i in [0...boardCopy[0].length]
-        util.print "--"
-      util.print "-|\n"
-
-      console.log "MatchedTiles: #{matchedTiles}"
 
     if matchedTiles is fittingTiles
       @ended = true
@@ -240,14 +188,6 @@ module.exports = class extends EventEmitter
         @addPlayer(player)
 
       @broadcastPlayers()
-
-
-    # if not @ended and not player.willDisconnect
-    #   console.log "onPlayerDisconnect"
-    #   for p in @players when p isnt player
-    #     p.willDisconnect = true
-
-    #   @emit "game_ended", "`#{player.name}` left the game"
 
   broadcastPlayers: ->
     players = {}

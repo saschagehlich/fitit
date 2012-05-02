@@ -7,9 +7,13 @@
 
     Player.prototype.tileImageURLs = {
       'green': '/images/green-tile.png',
+      'green-transparent': '/images/green-tile-transparent.png',
       'orange': '/images/orange-tile.png',
+      'orange-transparent': '/images/orange-tile-transparent.png',
       'pink': '/images/pink-tile.png',
-      'blue': '/images/blue-tile.png'
+      'pink-transparent': '/images/pink-tile-transparent.png',
+      'blue': '/images/blue-tile.png',
+      'blue-transparent': '/images/blue-tile-transparent.png'
     };
 
     Player.prototype.tileImages = {};
@@ -27,7 +31,7 @@
       }
     }
 
-    Player.prototype.draw = function(boardData, overlappingTile) {
+    Player.prototype.draw = function(boardData) {
       var row, value, _i, _len, _ref, _results;
       _ref = this.playerData.block;
       _results = [];
@@ -48,9 +52,10 @@
               x = playerPosition.x * 32;
               y = playerPosition.y * 32;
               if (value > 0) {
-                _this.context.drawImage(_this.tileImages[_this.playerData.color], x, y);
                 if (boardData[playerPosition.y][playerPosition.x] === -1) {
-                  return _this.context.drawImage(overlappingTile, x, y);
+                  return _this.context.drawImage(_this.tileImages[_this.playerData.color + '-transparent'], x, y);
+                } else {
+                  return _this.context.drawImage(_this.tileImages[_this.playerData.color], x, y);
                 }
               }
             })(value));

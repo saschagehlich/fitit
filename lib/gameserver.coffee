@@ -11,21 +11,30 @@ module.exports = class
     socket.on "name", (name) =>
       socket.playerName = name
 
-      @queue.push socket
+      incompleteGame = null
+      for game in @games when game.players.length < 4
+        incompleteGame = game
+        break
 
-      for waitingSocket in @queue
-        waitingSocket.emit "queue_length", @queue.length
+      if incompleteGame
+        player = new Player(socket)
+        incompleteGame.addPlayer(player)
+      else
+        @queue.push socket
 
-      socket.inQueue = true
-      socket.on "disconnect", =>
-        if socket.inQueue
-          if ~@queue.indexOf(socket)
-            @queue.splice @queue.indexOf(socket), 1
+        for waitingSocket in @queue
+          waitingSocket.emit "queue_length", @queue.length
 
-          for waitingSocket in @queue
-            waitingSocket.emit "queue_length", @queue.length
+        socket.inQueue = true
+        socket.on "disconnect", =>
+          if socket.inQueue
+            if ~@queue.indexOf(socket)
+              @queue.splice @queue.indexOf(socket), 1
 
-      @checkQueue()
+            for waitingSocket in @queue
+              waitingSocket.emit "queue_length", @queue.length
+
+        @checkQueue()
 
   checkQueue: ->
     if @queue.length is 4

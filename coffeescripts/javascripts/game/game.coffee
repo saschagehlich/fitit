@@ -100,7 +100,6 @@ window.FitItGame = FitItGame = class
     $('.waiting-for').text(4-parseInt(newLength))
 
   onPlayers: (players) =>
-    console.log players
     $('.players').empty()
     for key, player of players
       li = $('<li>')
@@ -240,7 +239,7 @@ window.FitItGame = FitItGame = class
     @context.clearRect 0, 0, @context.canvas.width, @context.canvas.height
     @board.draw()
     for key, player of @players
-      player.draw(@board.boardData, @overlappingTile)
+      player.draw(@board.boardData)
     @drawOverlappingBlocks()
 
 

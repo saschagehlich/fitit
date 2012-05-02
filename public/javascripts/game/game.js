@@ -140,7 +140,6 @@
 
     _Class.prototype.onPlayers = function(players) {
       var key, li, player, playerCanvas, _results;
-      console.log(players);
       $('.players').empty();
       _results = [];
       for (key in players) {
@@ -361,7 +360,7 @@
       _ref = this.players;
       for (key in _ref) {
         player = _ref[key];
-        player.draw(this.board.boardData, this.overlappingTile);
+        player.draw(this.board.boardData);
       }
       return this.drawOverlappingBlocks();
     };

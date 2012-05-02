@@ -2,9 +2,13 @@ class Player
 
   tileImageURLs:
     'green': '/images/green-tile.png'
+    'green-transparent': '/images/green-tile-transparent.png'
     'orange': '/images/orange-tile.png'
+    'orange-transparent': '/images/orange-tile-transparent.png'
     'pink': '/images/pink-tile.png'
+    'pink-transparent': '/images/pink-tile-transparent.png'
     'blue': '/images/blue-tile.png'
+    'blue-transparent': '/images/blue-tile-transparent.png'
 
   tileImages: {}
 
@@ -16,7 +20,7 @@ class Player
 
       @tileImages[key] = i
 
-  draw: (boardData, overlappingTile) ->
+  draw: (boardData) ->
     for row in @playerData.block
       for value in row
         do (value) =>
@@ -27,10 +31,10 @@ class Player
           y = playerPosition.y * 32
           
           if value > 0
-            @context.drawImage(@tileImages[@playerData.color], x, y)
-
-            # draw stop sign if not on fitted tile
+            # draw transparent tile if not on fitted tile
             if boardData[playerPosition.y][playerPosition.x] is -1
-              @context.drawImage overlappingTile, x, y
+              @context.drawImage @tileImages[@playerData.color + '-transparent'], x, y
+            else
+              @context.drawImage(@tileImages[@playerData.color], x, y)
 
 window.FitItPlayer = Player
