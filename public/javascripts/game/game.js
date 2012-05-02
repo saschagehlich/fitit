@@ -21,6 +21,8 @@
 
       this.onPlayerMoved = __bind(this.onPlayerMoved, this);
 
+      this.onPlayers = __bind(this.onPlayers, this);
+
       this.onGamedata = __bind(this.onGamedata, this);
 
       this.onGameEnded = __bind(this.onGameEnded, this);
@@ -97,6 +99,7 @@
       this.socket.on("queue_length", this.onQueueLengthChanged);
       this.socket.on("winning", this.onWinning);
       this.socket.on("game_ended", this.onGameEnded);
+      this.socket.on("players", this.onPlayers);
       return this.bindNameInput();
     };
 
@@ -123,7 +126,7 @@
     _Class.prototype.onGamedata = function(data) {
       var key, newPlayer, player, _ref;
       soundManager.play("dingdong");
-      this.changeToGameView(data.players);
+      this.changeToGameView();
       if (!this.board) {
         this.board = new FitItBoard;
       }
@@ -142,17 +145,11 @@
       return $('.waiting-for').text(4 - parseInt(newLength));
     };
 
-    _Class.prototype.changeToWaitingView = function() {
-      $(document).unbind("keydown");
-      $('.players, canvas#screen').fadeOut('fast');
-      return $('.info, .waiting').fadeIn('fast');
-    };
-
-    _Class.prototype.changeToGameView = function(players) {
-      var key, li, player, playerCanvas;
-      this.bindKeys();
-      $('.info, .waiting').fadeOut('fast');
+    _Class.prototype.onPlayers = function(players) {
+      var key, li, player, playerCanvas, _results;
+      console.log(players);
       $('.players').empty();
+      _results = [];
       for (key in players) {
         player = players[key];
         li = $('<li>');
@@ -164,8 +161,20 @@
         li.append(playerCanvas);
         li.append($('<span>').addClass('player-name').text(player.name));
         $('.players').append(li);
-        this.drawPlayerCanvas(playerCanvas, player.block, player.color);
+        _results.push(this.drawPlayerCanvas(playerCanvas, player.block, player.color));
       }
+      return _results;
+    };
+
+    _Class.prototype.changeToWaitingView = function() {
+      $(document).unbind("keydown");
+      $('.players, canvas#screen').fadeOut('fast');
+      return $('.info, .waiting').fadeIn('fast');
+    };
+
+    _Class.prototype.changeToGameView = function() {
+      this.bindKeys();
+      $('.info, .waiting').fadeOut('fast');
       return $('.players, canvas#screen').fadeIn('fast');
     };
 

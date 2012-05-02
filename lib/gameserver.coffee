@@ -49,3 +49,15 @@ module.exports = class
       game.startGame()
 
       @games.push game
+
+  getLongestWaitingSocket: ->
+    if @queue.length > 0
+      socket = @queue[0]
+
+      # remove socket from queue
+      @queue.splice(@queue.indexOf(socket), 1)
+
+      return socket
+    else
+      return false
+

@@ -62,10 +62,21 @@ module.exports = class extends EventEmitter
       for j in [0...5]
         @board[4+i][5+j] = @level.data[i][j]
 
-  addPlayer: (player) ->
-    @playerId++
-    player.id = @playerId
+  findNextFreePlayerId: ->
+    for i in [1...5]
+      idFree = true
+      for player in @players
+        if player.id is i
+          idFree = false
 
+      if idFree
+        return i
+
+  addPlayer: (player) ->
+    # find free player Id
+    @playerId = @findNextFreePlayerId()
+
+    player.id = @playerId
     player.color = @tmpColors[0]
     player.blockId = @level.blocks[0]
     player.block = @blocks.blocks[player.blockId]
@@ -103,6 +114,7 @@ module.exports = class extends EventEmitter
 
   startGame: ->
     @broadcastInitialData()
+    @broadcastPlayers()
 
 
   checkBounds: (player, direction) =>
@@ -210,13 +222,39 @@ module.exports = class extends EventEmitter
     @checkSolved()
 
   onPlayerDisconnect: (player) =>
-    if not @ended and not player.willDisconnect
-      console.log "onPlayerDisconnect"
-      for p in @players when p isnt player
-        console.log "setting #{p.name} to willDisconnect"
-        p.willDisconnect = true
+    if ~@players.indexOf(player)
+      # kick player
+      @players.splice(@players.indexOf(player), 1)
 
-      @emit "game_ended", "`#{player.name}` left the game"
+      # add color back to tmpColors
+      @tmpColors.push player.color
+
+      # add block id back to level blocks
+      @level.blocks.push player.blockId
+
+      @broadcastPlayerLeave(player)
+
+      # is there a player waiting in queue?
+      if socket = @server.getLongestWaitingSocket()
+        player = new Player(socket)
+        @addPlayer(player)
+
+      @broadcastPlayers()
+
+
+    # if not @ended and not player.willDisconnect
+    #   console.log "onPlayerDisconnect"
+    #   for p in @players when p isnt player
+    #     p.willDisconnect = true
+
+    #   @emit "game_ended", "`#{player.name}` left the game"
+
+  broadcastPlayers: ->
+    players = {}
+    for player in @players
+      players[player.id] = player.safeObj()
+
+    @io.sockets.in("game-#{@id}").emit "players", players
 
   broadcastInitialData: ->
     players = {}

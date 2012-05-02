@@ -69,6 +69,7 @@ window.FitItGame = FitItGame = class
     @socket.on "queue_length", @onQueueLengthChanged
     @socket.on "winning", @onWinning
     @socket.on "game_ended", @onGameEnded
+    @socket.on "players", @onPlayers
 
     @bindNameInput()
 
@@ -89,7 +90,7 @@ window.FitItGame = FitItGame = class
   onGamedata: (data) =>
     soundManager.play "dingdong"
 
-    @changeToGameView(data.players)
+    @changeToGameView()
     unless @board
       @board = new FitItBoard
     @board.initialize @context, data.board
@@ -102,14 +103,8 @@ window.FitItGame = FitItGame = class
   onQueueLengthChanged: (newLength) ->
     $('.waiting-for').text(4-parseInt(newLength))
 
-  changeToWaitingView: ->
-    $(document).unbind "keydown"
-    $('.players, canvas#screen').fadeOut 'fast'
-    $('.info, .waiting').fadeIn 'fast'
-
-  changeToGameView: (players) ->
-    @bindKeys()
-    $('.info, .waiting').fadeOut 'fast'
+  onPlayers: (players) =>
+    console.log players
     $('.players').empty()
     for key, player of players
       li = $('<li>')
@@ -119,6 +114,15 @@ window.FitItGame = FitItGame = class
       $('.players').append li
 
       @drawPlayerCanvas(playerCanvas, player.block, player.color)
+
+  changeToWaitingView: ->
+    $(document).unbind "keydown"
+    $('.players, canvas#screen').fadeOut 'fast'
+    $('.info, .waiting').fadeIn 'fast'
+
+  changeToGameView: ->
+    @bindKeys()
+    $('.info, .waiting').fadeOut 'fast'
     $('.players, canvas#screen').fadeIn 'fast'
 
   drawPlayerCanvas: (canvas, block, color) ->
