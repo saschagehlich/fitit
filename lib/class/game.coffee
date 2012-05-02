@@ -189,6 +189,9 @@ module.exports = class extends EventEmitter
 
       @broadcastPlayers()
 
+      if @players.length is 0
+        @emit "game_ended"
+
   broadcastPlayers: ->
     players = {}
     for player in @players

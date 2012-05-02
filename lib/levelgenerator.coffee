@@ -38,8 +38,6 @@ module.exports = class
           block = blockArr[0]
           bid = blockArr[1]
 
-          console.log blockArr
-
           unless ~usedBlockIds.indexOf(bid)
             blockFound = true
         
