@@ -16,13 +16,21 @@ class Player
 
       @tileImages[key] = i
 
-  draw: ->
+  draw: (boardData, overlappingTile) ->
     for row in @playerData.block
       for value in row
         do (value) =>
-          x = @playerData.position.x * 32 + (_j * 32)
-          y = @playerData.position.y * 32 + (_i * 32)
+          playerPosition =
+            x: @playerData.position.x + _j
+            y: @playerData.position.y + _i
+          x = playerPosition.x * 32
+          y = playerPosition.y * 32
+          
           if value > 0
             @context.drawImage(@tileImages[@playerData.color], x, y)
+
+            # draw stop sign if not on fitted tile
+            if boardData[playerPosition.y][playerPosition.x] is -1
+              @context.drawImage overlappingTile, x, y
 
 window.FitItPlayer = Player

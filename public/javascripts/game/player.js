@@ -27,7 +27,7 @@
       }
     }
 
-    Player.prototype.draw = function() {
+    Player.prototype.draw = function(boardData, overlappingTile) {
       var row, value, _i, _len, _ref, _results;
       _ref = this.playerData.block;
       _results = [];
@@ -40,11 +40,18 @@
           for (_j = 0, _len1 = row.length; _j < _len1; _j++) {
             value = row[_j];
             _results1.push((function(value) {
-              var x, y;
-              x = _this.playerData.position.x * 32 + (_j * 32);
-              y = _this.playerData.position.y * 32 + (_i * 32);
+              var playerPosition, x, y;
+              playerPosition = {
+                x: _this.playerData.position.x + _j,
+                y: _this.playerData.position.y + _i
+              };
+              x = playerPosition.x * 32;
+              y = playerPosition.y * 32;
               if (value > 0) {
-                return _this.context.drawImage(_this.tileImages[_this.playerData.color], x, y);
+                _this.context.drawImage(_this.tileImages[_this.playerData.color], x, y);
+                if (boardData[playerPosition.y][playerPosition.x] === -1) {
+                  return _this.context.drawImage(overlappingTile, x, y);
+                }
               }
             })(value));
           }

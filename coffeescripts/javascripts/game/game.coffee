@@ -73,10 +73,6 @@ window.FitItGame = FitItGame = class
 
     @bindNameInput()
 
-  startAnimationLoop: ->
-    every 1000 / 30, =>
-      @draw()
-
   onGameEnded: (err) =>
     alert "The game has ended due to this reason: #{err}"
     location.reload()
@@ -98,7 +94,7 @@ window.FitItGame = FitItGame = class
     for key, player of data.players
       newPlayer = new FitItPlayer @context, player
       @players[player.id] = newPlayer
-    @startAnimationLoop()
+    @startGameLoop()
 
   onQueueLengthChanged: (newLength) ->
     $('.waiting-for').text(4-parseInt(newLength))
@@ -197,44 +193,55 @@ window.FitItGame = FitItGame = class
         break
       i++
 
-  draw: ->
-    @context.clearRect 0, 0, @context.canvas.width, @context.canvas.height
-    @board.draw()
 
-    tempBoard = []
-    for i in [0...13]
-      row = []
-      for i in [0...15]
-        row.push -1
-      tempBoard.push row
+  startGameLoop: ->
+    every 1000 / 30, =>
+      @detectOverlappingPlayers()
+      @draw()
+
+
+  detectOverlappingPlayers: ->
+    @overlappingData = {}
 
     for key, player of @players
-      ###
-        Recognize block overlapping
-      ###
       playerBlock = player.playerData.block
       playerPosition = player.playerData.position
 
-      for blockY in [0...playerBlock.length]
-        for blockX in [0...playerBlock[blockY].length]
-          tileY = playerPosition.y + blockY
-          tileX = playerPosition.x + blockX
-          if playerBlock[blockY][blockX] isnt -1
-            if tempBoard[tileY][tileX] is -1
-              tempBoard[tileY][tileX] = player.playerData.id
+      for playerBlockY in [0...playerBlock.length]
+        for playerBlockX in [0...playerBlock[playerBlockY].length]
+          # player tile position on board
+          tilePositionY = playerPosition.y + playerBlockY
+          tilePositionX = playerPosition.x + playerBlockX
+
+          # set if undefined
+          @overlappingData[tilePositionY] ?= {}
+          @overlappingData[tilePositionY][tilePositionX] ?= -1
+          
+          # if current tile is an actual player tile
+          if playerBlock[playerBlockY][playerBlockX] isnt -1
+
+            # if no player tile is on the current tile postion
+            if @overlappingData[tilePositionY][tilePositionX] is -1
+              @overlappingData[tilePositionY][tilePositionX] = 0
             else
-              tempBoard[tileY][tileX] = 0 # overlapping!
+              # there is already a player tile on this position
+              @overlappingData[tilePositionY][tilePositionX] = 1 # overlapping!
 
-      player.draw()
+  drawOverlappingBlocks: ->
+    for tilePositionY, overlappingRow of @overlappingData
+      for tilePositionX, isOverlapping of overlappingRow
+        if isOverlapping is 1
+          @context.drawImage @overlappingTile, tilePositionX * 32, tilePositionY * 32  
 
-    ###
-      Draw overlapping tiles
-    ###
-    for tileY in [0...tempBoard.length]
-      for tileX in [0...tempBoard[tileY].length]
-        tile = tempBoard[tileY][tileX]
-        if tile is 0
-          @context.drawImage @overlappingTile, tileX * 32, tileY * 32
+  ###
+    Only drawing code here, please!
+  ###
+  draw: ->
+    @context.clearRect 0, 0, @context.canvas.width, @context.canvas.height
+    @board.draw()
+    for key, player of @players
+      player.draw(@board.boardData, @overlappingTile)
+    @drawOverlappingBlocks()
 
 
 window.FitItHelper ?= {}

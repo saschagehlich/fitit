@@ -103,13 +103,6 @@
       return this.bindNameInput();
     };
 
-    _Class.prototype.startAnimationLoop = function() {
-      var _this = this;
-      return every(1000 / 30, function() {
-        return _this.draw();
-      });
-    };
-
     _Class.prototype.onGameEnded = function(err) {
       alert("The game has ended due to this reason: " + err);
       return location.reload();
@@ -138,7 +131,7 @@
         newPlayer = new FitItPlayer(this.context, player);
         this.players[player.id] = newPlayer;
       }
-      return this.startAnimationLoop();
+      return this.startGameLoop();
     };
 
     _Class.prototype.onQueueLengthChanged = function(newLength) {
@@ -281,55 +274,71 @@
       return _results;
     };
 
-    _Class.prototype.draw = function() {
-      var blockX, blockY, i, key, player, playerBlock, playerPosition, row, tempBoard, tile, tileX, tileY, _i, _j, _k, _l, _m, _ref, _ref1, _ref2, _ref3, _results;
-      this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
-      this.board.draw();
-      tempBoard = [];
-      for (i = _i = 0; _i < 13; i = ++_i) {
-        row = [];
-        for (i = _j = 0; _j < 15; i = ++_j) {
-          row.push(-1);
-        }
-        tempBoard.push(row);
-      }
+    _Class.prototype.startGameLoop = function() {
+      var _this = this;
+      return every(1000 / 30, function() {
+        _this.detectOverlappingPlayers();
+        return _this.draw();
+      });
+    };
+
+    _Class.prototype.detectOverlappingPlayers = function() {
+      var key, player, playerBlock, playerBlockX, playerBlockY, playerPosition, tilePositionX, tilePositionY, _ref, _results;
+      this.overlappingData = {};
       _ref = this.players;
+      _results = [];
       for (key in _ref) {
         player = _ref[key];
-        /*
-                Recognize block overlapping
-        */
-
         playerBlock = player.playerData.block;
         playerPosition = player.playerData.position;
-        for (blockY = _k = 0, _ref1 = playerBlock.length; 0 <= _ref1 ? _k < _ref1 : _k > _ref1; blockY = 0 <= _ref1 ? ++_k : --_k) {
-          for (blockX = _l = 0, _ref2 = playerBlock[blockY].length; 0 <= _ref2 ? _l < _ref2 : _l > _ref2; blockX = 0 <= _ref2 ? ++_l : --_l) {
-            tileY = playerPosition.y + blockY;
-            tileX = playerPosition.x + blockX;
-            if (playerBlock[blockY][blockX] !== -1) {
-              if (tempBoard[tileY][tileX] === -1) {
-                tempBoard[tileY][tileX] = player.playerData.id;
-              } else {
-                tempBoard[tileY][tileX] = 0;
-              }
-            }
-          }
-        }
-        player.draw();
-      }
-      /*
-            Draw overlapping tiles
-      */
-
-      _results = [];
-      for (tileY = _m = 0, _ref3 = tempBoard.length; 0 <= _ref3 ? _m < _ref3 : _m > _ref3; tileY = 0 <= _ref3 ? ++_m : --_m) {
         _results.push((function() {
-          var _n, _ref4, _results1;
+          var _i, _ref1, _results1;
           _results1 = [];
-          for (tileX = _n = 0, _ref4 = tempBoard[tileY].length; 0 <= _ref4 ? _n < _ref4 : _n > _ref4; tileX = 0 <= _ref4 ? ++_n : --_n) {
-            tile = tempBoard[tileY][tileX];
-            if (tile === 0) {
-              _results1.push(this.context.drawImage(this.overlappingTile, tileX * 32, tileY * 32));
+          for (playerBlockY = _i = 0, _ref1 = playerBlock.length; 0 <= _ref1 ? _i < _ref1 : _i > _ref1; playerBlockY = 0 <= _ref1 ? ++_i : --_i) {
+            _results1.push((function() {
+              var _base, _base1, _j, _ref2, _results2;
+              _results2 = [];
+              for (playerBlockX = _j = 0, _ref2 = playerBlock[playerBlockY].length; 0 <= _ref2 ? _j < _ref2 : _j > _ref2; playerBlockX = 0 <= _ref2 ? ++_j : --_j) {
+                tilePositionY = playerPosition.y + playerBlockY;
+                tilePositionX = playerPosition.x + playerBlockX;
+                if ((_base = this.overlappingData)[tilePositionY] == null) {
+                  _base[tilePositionY] = {};
+                }
+                if ((_base1 = this.overlappingData[tilePositionY])[tilePositionX] == null) {
+                  _base1[tilePositionX] = -1;
+                }
+                if (playerBlock[playerBlockY][playerBlockX] !== -1) {
+                  if (this.overlappingData[tilePositionY][tilePositionX] === -1) {
+                    _results2.push(this.overlappingData[tilePositionY][tilePositionX] = 0);
+                  } else {
+                    _results2.push(this.overlappingData[tilePositionY][tilePositionX] = 1);
+                  }
+                } else {
+                  _results2.push(void 0);
+                }
+              }
+              return _results2;
+            }).call(this));
+          }
+          return _results1;
+        }).call(this));
+      }
+      return _results;
+    };
+
+    _Class.prototype.drawOverlappingBlocks = function() {
+      var isOverlapping, overlappingRow, tilePositionX, tilePositionY, _ref, _results;
+      _ref = this.overlappingData;
+      _results = [];
+      for (tilePositionY in _ref) {
+        overlappingRow = _ref[tilePositionY];
+        _results.push((function() {
+          var _results1;
+          _results1 = [];
+          for (tilePositionX in overlappingRow) {
+            isOverlapping = overlappingRow[tilePositionX];
+            if (isOverlapping === 1) {
+              _results1.push(this.context.drawImage(this.overlappingTile, tilePositionX * 32, tilePositionY * 32));
             } else {
               _results1.push(void 0);
             }
@@ -338,6 +347,23 @@
         }).call(this));
       }
       return _results;
+    };
+
+    /*
+        Only drawing code here, please!
+    */
+
+
+    _Class.prototype.draw = function() {
+      var key, player, _ref;
+      this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height);
+      this.board.draw();
+      _ref = this.players;
+      for (key in _ref) {
+        player = _ref[key];
+        player.draw(this.board.boardData, this.overlappingTile);
+      }
+      return this.drawOverlappingBlocks();
     };
 
     return _Class;
